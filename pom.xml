@@ -1,0 +1,111 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.juntools</groupId>
+    <artifactId>juntools-jselenium</artifactId>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
+    <name>JSelenium Test Framework</name>
+
+	<developers>
+        <developer>
+            <id>junsheng</id>
+            <name>Jun Sheng</name>
+            <email>jun1983.sheng@gmail.com</email>
+        </developer>
+    </developers>
+
+    <properties>
+        <java.version>1.8</java.version>
+        <junit.version>4.12</junit.version>
+        <selenium.version>3.141.59</selenium.version>
+        <maven.compiler.version>3.1</maven.compiler.version>
+        <lombok.version>1.18.6</lombok.version>
+        <surefire.version>2.22.0</surefire.version>
+        <guava.version>23.0</guava.version>
+        <itextpdf.version>5.5.12</itextpdf.version>
+        <json.version>20180130</json.version>
+        <logback.version>1.2.3</logback.version>
+        <axe.version>2.0</axe.version>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven.compiler.version}</version>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+            <plugin>
+			  <groupId>org.apache.maven.plugins</groupId>
+			  <artifactId>maven-source-plugin</artifactId>
+			  <executions>
+			    <execution>
+			      <id>attach-sources</id>
+			      <goals>
+			        <goal>jar</goal>
+			      </goals>
+			    </execution>
+			  </executions>
+			</plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${surefire.version}</version>
+                <configuration>
+                    <shutdown>kill</shutdown>
+                    <reuseForks>true</reuseForks>
+                    <parallel>classesAndMethods</parallel>
+                    <useUnlimitedThreads>true</useUnlimitedThreads>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    
+    <dependencies>
+		<dependency>
+		    <groupId>org.json</groupId>
+		    <artifactId>json</artifactId>
+		    <version>${json.version}</version>
+		</dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <version>${selenium.version}</version>
+        </dependency>
+        <dependency>
+		      <groupId>com.google.guava</groupId>
+		      <artifactId>guava</artifactId>
+		      <version>${guava.version}</version>
+		</dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+        </dependency>
+		<dependency>
+		    <groupId>ch.qos.logback</groupId>
+		    <artifactId>logback-classic</artifactId>
+		    <version>${logback.version}</version>
+		</dependency>
+
+	    <dependency>
+	    <groupId>com.deque</groupId>
+	    <artifactId>axe-selenium</artifactId>
+	    <version>${axe.version}</version>
+	</dependency>
+    </dependencies>
+
+</project>
