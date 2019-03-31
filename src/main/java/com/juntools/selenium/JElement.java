@@ -70,19 +70,19 @@ public class JElement {
 		return this.jd;
 	}
 	
-	public JElement findElement(By... bys) {
-		return findElement(ElementSelectionType.ALL, bys);
+	public JElement find(By... bys) {
+		return find(ElementSelectionType.ALL, bys);
 	}
 	
-	public JElement findElement(ElementSelectionType elementSelectionType, By... bys) {
+	public JElement find(ElementSelectionType elementSelectionType, By... bys) {
 		return new JElement(this, elementSelectionType, bys);
 	}
 		
-	public JElement findElement(String cssSelector) {
-		return findElement(ElementSelectionType.ALL, cssSelector);
+	public JElement find(String cssSelector) {
+		return find(ElementSelectionType.ALL, cssSelector);
 	}
 	
-	public JElement findElement(ElementSelectionType elementSelectionType, String cssSelector) {
+	public JElement find(ElementSelectionType elementSelectionType, String cssSelector) {
 		return new JElement(this, cssSelector);
 	}
 	
@@ -224,7 +224,7 @@ public class JElement {
 	}
 	
 	public JElement parent() throws Exception{
-		return this.findElement(By.xpath("./.."));
+		return find(By.xpath("./.."));
 	} 
 	
 	public String getAttribute(String name) throws Exception{
