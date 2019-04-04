@@ -1,2 +1,1 @@
-# jselenium
-To be free from flaky selenium coding
+# Java Selenium Test Framework
