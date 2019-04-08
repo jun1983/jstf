@@ -2,11 +2,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.juntools</groupId>
-    <artifactId>juntools-jselenium</artifactId>
-    <version>1.0.0</version>
+    <groupId>com.jstf</groupId>
+    <artifactId>jselenium</artifactId>
+    <version>0.0.1</version>
     <packaging>jar</packaging>
-    <name>JSelenium Test Framework</name>
+    <name>java Selenium Test Framework</name>
 
 	<developers>
         <developer>
@@ -28,6 +28,10 @@
         <json.version>20180130</json.version>
         <logback.version>1.2.3</logback.version>
         <axe.version>2.0</axe.version>
+        <bmp.version>2.1.5</bmp.version>
+        <snakeyaml.version>1.15</snakeyaml.version>
+        <commons-io.version>2.6</commons-io.version>
+        <httpclient.version>4.5.8</httpclient.version>
     </properties>
 
     <build>
@@ -90,6 +94,11 @@
 		      <artifactId>guava</artifactId>
 		      <version>${guava.version}</version>
 		</dependency>
+		<dependency>
+		    <groupId>org.apache.httpcomponents</groupId>
+		    <artifactId>httpclient</artifactId>
+		    <version>${httpclient.version}</version>
+		</dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -100,7 +109,31 @@
 		    <artifactId>logback-classic</artifactId>
 		    <version>${logback.version}</version>
 		</dependency>
-
+		<dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>${snakeyaml.version}</version>
+        </dependency>
+        <dependency>
+		    <groupId>commons-io</groupId>
+		    <artifactId>commons-io</artifactId>
+		    <version>${commons-io.version}</version>
+		</dependency>
+		<dependency>
+	        <groupId>net.lightbody.bmp</groupId>
+	        <artifactId>browsermob-core</artifactId>
+	        <version>${bmp.version}</version>
+	        <exclusions>
+		      <exclusion> 
+		        <groupId>org.slf4j</groupId>
+		        <artifactId>slf4j-log4j12</artifactId>
+		      </exclusion>
+		      <exclusion> 
+		        <groupId>log4j</groupId>
+		        <artifactId>log4j</artifactId>
+		      </exclusion>
+		    </exclusions>
+	    </dependency>
 	    <dependency>
 	    <groupId>com.deque</groupId>
 	    <artifactId>axe-selenium</artifactId>
