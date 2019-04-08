@@ -396,7 +396,7 @@ public class JElement {
 				this.clear();
 				element.sendKeys(inputStr);
 				
-				if(textEquals(expectedValue)) {
+				if(valueEquals(expectedValue)) {
 					return this;
 				}else {
 					throw new Exception("Send keys failed. Input str: " + inputStr + ", expectedValue:" + expectedValue + ", Actual value:" + getValue());
