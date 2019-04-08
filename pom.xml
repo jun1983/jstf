@@ -32,6 +32,8 @@
         <snakeyaml.version>1.15</snakeyaml.version>
         <commons-io.version>2.6</commons-io.version>
         <httpclient.version>4.5.8</httpclient.version>
+        <janino.version>3.0.8</janino.version>
+        <zap-clientapi.version>1.6.0</zap-clientapi.version>
     </properties>
 
     <build>
@@ -110,6 +112,11 @@
 		    <version>${logback.version}</version>
 		</dependency>
 		<dependency>
+		  <groupId>org.codehaus.janino</groupId>
+		  <artifactId>janino</artifactId>
+		  <version>${janino.version}</version>
+		</dependency>
+		<dependency>
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
             <version>${snakeyaml.version}</version>
@@ -119,6 +126,11 @@
 		    <artifactId>commons-io</artifactId>
 		    <version>${commons-io.version}</version>
 		</dependency>
+		<dependency>
+            <groupId>org.zaproxy</groupId>
+            <artifactId>zap-clientapi</artifactId>
+            <version>${zap-clientapi.version}</version>
+        </dependency>
 		<dependency>
 	        <groupId>net.lightbody.bmp</groupId>
 	        <artifactId>browsermob-core</artifactId>

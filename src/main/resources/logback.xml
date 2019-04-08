@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+  	<filter class="ch.qos.logback.core.filter.EvaluatorFilter">      
+      <evaluator> <!-- defaults to type ch.qos.logback.classic.boolex.JaninoEventEvaluator -->
+        <expression>return message.contains("io.netty.util.IllegalReferenceCountException");</expression>
+      </evaluator>
+      <OnMismatch>NEUTRAL</OnMismatch>
+      <OnMatch>DENY</OnMatch>
+    </filter>
+    <filter class="ch.qos.logback.core.filter.EvaluatorFilter">      
+      <evaluator> <!-- defaults to type ch.qos.logback.classic.boolex.JaninoEventEvaluator -->
+        <expression>return message.contains("Connection to upstream server failed") || message.contains("Event loop shut down") || message.contains("An event executor terminated with non-empty task queue");</expression>
+      </evaluator>
+      <OnMismatch>NEUTRAL</OnMismatch>
+      <OnMatch>DENY</OnMatch>
+    </filter>
+    <encoder>
+<!--       <pattern>[%level] [%thread] %logger{10} [%file:%line] %msg%n</pattern> -->
+      <pattern>[%level] %msg [%file:%line] [%thread]%n</pattern>
+    </encoder>
+  </appender>
+  <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+    <!-- "application-name" is a variable -->
+    <file>target/jstflogs/jstf.log</file>
+    <filter class="ch.qos.logback.core.filter.EvaluatorFilter">      
+      <evaluator> <!-- defaults to type ch.qos.logback.classic.boolex.JaninoEventEvaluator -->
+        <expression>return message.contains("io.netty.util.IllegalReferenceCountException");</expression>
+      </evaluator>
+      <OnMismatch>NEUTRAL</OnMismatch>
+      <OnMatch>DENY</OnMatch>
+    </filter>
+    <filter class="ch.qos.logback.core.filter.EvaluatorFilter">      
+      <evaluator> <!-- defaults to type ch.qos.logback.classic.boolex.JaninoEventEvaluator -->
+        <expression>return message.contains("Connection to upstream server failed") || message.contains("Event loop shut down") || message.contains("An event executor terminated with non-empty task queue");</expression>
+      </evaluator>
+      <OnMismatch>NEUTRAL</OnMismatch>
+      <OnMatch>DENY</OnMatch>
+    </filter>
+    <encoder>
+    <!--       <pattern>[%level] [%thread] %logger{10} [%file:%line] %msg%n</pattern> -->
+      <pattern>[%level] %msg [%file:%line] [%thread]%n</pattern>
+    </encoder>
+  </appender>
+  
+  <logger name="JSTF" level="INFO" additivity="false">
+    <appender-ref ref="FILE" />
+    <appender-ref ref="STDOUT"/>
+  </logger>
+  
+  <root level="ERROR">
+    <appender-ref ref="STDOUT"/>
+  </root>
+  
+</configuration>

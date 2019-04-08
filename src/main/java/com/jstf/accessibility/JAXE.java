@@ -3,6 +3,7 @@ package com.jstf.accessibility;
 import static org.junit.Assert.assertTrue;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -14,28 +15,33 @@ import org.openqa.selenium.WebElement;
 
 import com.deque.axe.AXE;
 import com.deque.axe.AXE.Builder;
+import com.jstf.config.JConfig;
 import com.jstf.selenium.JDriver;
+import com.jstf.selenium.JElement;
 
 public class JAXE {
 	private final URL ruleScriptUrl = JAXE.class.getResource("/axe.min.js");
 	private Builder builder;
 	private WebDriver driver;
 	
-	private List<Rule> rules;  //wcag2a, wcag2aa, wcag412,section508,section508.22.a, all
+	private List<Rule> rules = new ArrayList<>();  //wcag2a, wcag2aa, wcag412,section508,section508.22.a, all
 	private ReportLevel reportLevel;  //critical, serious, moderate, all
 	
-	/*
-	public JAXE(WebDriver driver) throws JSONException {
-		this.rules =  ResourceManager.getGlobalConfig("axe_tags")==null? null : Arrays.asList(ResourceManager.getGlobalConfig("axe_tags").toLowerCase().split(","));
-		this.reportLevel = ResourceManager.getGlobalConfig("axe_report_level");
+	public JAXE(WebDriver driver) throws Exception {
+		List<String> axeRules = Arrays.asList(JConfig.AXE_RULES.toLowerCase().split(","));
+		
+		for (String axeRule : axeRules) {
+			rules.add(Rule.fromString(axeRule));
+		}
+		this.reportLevel = ReportLevel.fromString(JConfig.AXE_REPORT_LEVEL.toLowerCase());
+		
 		this.driver = driver;
 		init();
 	}
 		
-	public JAXE(JDriver jd) throws JSONException {
-		this(jd.getWebDriver());
+	public JAXE(JDriver jDriver) throws Exception {
+		this(jDriver.getWebDriver());
 	}
-	*/
 	
 	public JAXE(WebDriver driver, List<Rule> rules, ReportLevel reportLevel) throws JSONException {
 		this.driver = driver;
@@ -64,6 +70,11 @@ public class JAXE {
 	
 	public void validate(WebElement element) throws Exception {
 		JSONObject jsonObject = builder.analyze(element);
+		doAssertion(jsonObject);
+	}
+	
+	public void validate(JElement jElement) throws Exception {
+		JSONObject jsonObject = builder.analyze(jElement.getWebElement());
 		doAssertion(jsonObject);
 	}
 	

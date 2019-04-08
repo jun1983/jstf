@@ -12,7 +12,7 @@ public class JLogger {
 			return logger;
 		}
 		
-		Logger logger = (Logger) LoggerFactory.getLogger("jstf");
+		Logger logger = (Logger) LoggerFactory.getLogger("JSTF");
 	    JLogger.logger = logger;
 	    return logger;
 	}

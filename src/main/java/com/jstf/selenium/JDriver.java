@@ -3,8 +3,10 @@ package com.jstf.selenium;
 import java.io.File;
 import java.util.Calendar;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriver;
@@ -47,6 +49,18 @@ public class JDriver {
 	
 	public boolean isMockProxied() {
 		return this.jMockProxy!=null;
+	}
+	
+	public JMockProxy getMockProxy() {
+		return this.jMockProxy;
+	}
+	
+	public void closeMockProxy() throws Exception {
+		this.jMockProxy.close();
+	}
+	
+	public void getUrl(String url) throws Exception {
+		this.driver.get(url);
 	}
 	
 	public JElement find(String cssSelector) {
@@ -110,8 +124,25 @@ public class JDriver {
 		default:
 			throw new Exception(browserType + " is not supported.");
 		}
+		
+		driver.manage().timeouts().implicitlyWait(JConfig.ELEMENT_TIMEOUT, TimeUnit.SECONDS);
+		driver.manage().timeouts().pageLoadTimeout(JConfig.ELEMENT_TIMEOUT, TimeUnit.SECONDS);
+
+		if(JConfig.DEFAULT_WINDOW_SIZE!=null && !JConfig.DEFAULT_WINDOW_SIZE.isEmpty()) {
+			int width = Integer.parseInt(JConfig.DEFAULT_WINDOW_SIZE.split("[*]")[0]);
+			int height = Integer.parseInt(JConfig.DEFAULT_WINDOW_SIZE.split("[*]")[1]);
+			driver.manage().window().setSize(new Dimension(width, height));
+		}else {
+			driver.manage().window().maximize();
+		}
+
+		logger.info("New " + (isMockProxied()? "Mock Proxied ":"") + "browser opened. ");
 		this.driver = driver;
 		return this;
+	}
+	
+	public void close() {
+		this.getWebDriver().quit();
 	}
 	
 	private Proxy getProxySetting() throws Exception {

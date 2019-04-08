@@ -9,7 +9,9 @@ import java.util.Map;
 import org.json.JSONArray;
 
 import com.jstf.config.JConfig;
+import com.jstf.utils.JLogger;
 
+import ch.qos.logback.classic.Logger;
 import net.lightbody.bmp.BrowserMobProxy;
 import net.lightbody.bmp.BrowserMobProxyServer;
 import net.lightbody.bmp.core.har.Har;
@@ -23,6 +25,8 @@ public class JMockProxy {
 	private boolean chainedOnly = false;
 	private String upstreamProxy = null;
 	private boolean isAvailable = false;
+	
+	private Logger logger = JLogger.getLogger();
 	
 	private BrowserMobProxy internalProxy;
 	private BrowserMobProxy externalProxy;
@@ -67,10 +71,12 @@ public class JMockProxy {
 	public JMockProxy start() throws Exception{
 		if(!chainedOnly) {
 			internalProxy = intiateBrowserMobProxy();
+			logger.info("Direct Mock Proxy: " + getDirectMockAddress() + " connecting to internet directly");
 		}
 		
 		if(upstreamProxy!=null) {
 			externalProxy = intiateBrowserMobProxy(upstreamProxy);
+			logger.info("Chained Mock Proxy: " + getChainedMockAddress() + " chain upstream to " + getUpstreamProxy());
 		}
 		
 		return this;
@@ -146,6 +152,7 @@ public class JMockProxy {
 		if(externalProxy!=null) {
 			externalProxy.stop();
 		}
+		jMockProxies.remove(this);
 	}
 	
 	/**

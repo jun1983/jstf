@@ -13,6 +13,9 @@ public class JConfig {
 
 	public static final boolean IS_ZAP_ENABLED = getConfig("is_zap_enabled").equals("true");
 	public static final String ZAP_SERVER = getConfig("zap_server");
+	public static final String ZAP_APP_PATH = getConfig("zap_app_path");
+	public static final String ZAP_REPORT_PATH = getConfig("zap_report_path")==null? "target/ZAPReport.html" : getConfig("zap_report_path");
+	public static final String ZAP_LOG_FILE = getConfig("zap_log_file")==null? "target/jstflogs/zap.log" : getConfig("zap_log_file");
 
 	public static final boolean IS_PROXY_ENABLED = getConfig("is_proxy_enabled").equals("true");
 	public static final String PROXY_ADDR = getConfig("proxy_addr");
@@ -22,8 +25,12 @@ public class JConfig {
 	public static int ELEMENT_TIMEOUT = Integer.parseInt(getConfig("element_timeout"));
 	public static int ASSERTION_TIMEOUT = Integer.parseInt(getConfig("assertion_timeout"));
 	public static int ELEMENT_RETRYTIMES = Integer.parseInt(getConfig("element_retrytimes"));
-	
+	public static String DEFAULT_WINDOW_SIZE = getConfig("default_window_size");
 
+	//Accessibility config (AXE)
+	public static String AXE_REPORT_LEVEL = getConfig("axe_report_level")==null? "serious" : getConfig("axe_report_level");
+	public static String AXE_RULES = getConfig("axe_rules")==null? "all" : getConfig("axe_rules");
+	
 	public static OSType OS;
 	static {
 		String osName = System.getProperty("os.name").toLowerCase();
