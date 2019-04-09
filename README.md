@@ -43,28 +43,26 @@ JSFT uses yml file for configuration. Be default it is named jconfig.yml sitting
 
 ```
 #JSTF Configuration
-browser: "chrome"
+browser: "chrome" #chrome, firefox.   remote driver & other browsers are coming soon.
 is_headless_browser: "false"
 reuse_browser: "false"
-#browserHub=http://selenium-grid.master.dev.a1028-01.ams02.nonp.qcpaws.qantas.com.au:4444/wd/hub
+#browserHub=http://browserstack:4444/wd/hub
 
-#mockproxy & zap settings
+#mockproxy settings
 is_mock_proxy_enabled: "true"
+is_cors_enabled: "true" #only works when mock proxy enabled
 
+#zap settings
 is_zap_enabled: "false"
 zap_server: 127.0.0.1:6666
 zap_app_path: "" #ZAP zipped binary, or start script file.
 zap_report_path: "target/ZAPReport.html"
 zap_log_file: "target/jstflogs/zap.log"
 
+#proxy settings
 isProxyEnabled: "false"
-proxyAddress: proxy.qcpaws.qantas.com.au:3128
-proxyBypass: 10.*, *.qcpaws.qantas.com.au, www-staging.qantas.com, 127.0.0.1
-
-#Corporrate Proxy Setup
-is_proxy_enabled: "false" #true, false
-proxy_addr: "10.10.10.10:8080"
-proxy_bypass: ""
+proxyAddress: 10.10.10.10:8080
+#proxyBypass: 10.*, 127.0.0.1
 
 #Selenium settings
 element_timeout: "30"
