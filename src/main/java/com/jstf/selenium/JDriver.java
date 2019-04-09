@@ -12,8 +12,6 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.jstf.config.JConfig;
 import com.jstf.mockproxy.JMockProxy;
@@ -32,10 +30,18 @@ public class JDriver {
 		}
 	}
 	
+	/**
+	 * 
+	 * @param jMockProxy
+	 */
 	public JDriver(JMockProxy jMockProxy) {
 		this.jMockProxy = jMockProxy;
 	}
 	
+	/**
+	 * 
+	 * @return Selenium Web Driver
+	 */
 	public WebDriver getWebDriver() {
 		return this.driver;
 	}

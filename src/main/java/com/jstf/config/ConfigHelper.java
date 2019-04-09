@@ -25,6 +25,7 @@ public class ConfigHelper {
 		}
 		
 		try {
+			logger.info("Loading JSTF configuration from " + new File(configFile).getAbsolutePath());
 			jstfConfig = loadYamlFile(configFile);
 		} catch (IOException e) {
 			e.printStackTrace();

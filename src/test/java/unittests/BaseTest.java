@@ -36,6 +36,5 @@ public abstract class BaseTest {
 	public void tearDown() throws Exception {
 		jDriver.closeMockProxy();
 		jDriver.close();
-	}	
-
+	}
 }
