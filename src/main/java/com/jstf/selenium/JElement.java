@@ -422,6 +422,9 @@ public class JElement {
 				if(!isVisibleInViewport() && getWebElement().getSize().height<200) {
 					JavascriptExecutor je = (JavascriptExecutor) driver;
 			        je.executeScript("arguments[0].scrollIntoView({block: \"center\"});",getWebElement());
+			        if(!isPositioned()) {
+						throw new Exception("Element is still moving.");
+					}
 				}
 				return;
 			}catch(Exception e) {
