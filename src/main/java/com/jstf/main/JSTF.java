@@ -66,4 +66,16 @@ public class JSTF {
 			System.exit(-9997);
 		}
 	}
+	
+	public static void teardown() throws Exception {
+		JLogger.getLogger().info("**********************************************************************************************************");
+		JLogger.getLogger().info("******************************         JSTF  TEARDOWN        *********************************************");
+		JLogger.getLogger().info("**********************************************************************************************************");
+		if(JConfig.IS_ZAP_ENABLED) {
+			JLogger.getLogger().info("Tearing down ZAP Proxy..");
+			ZAPProxy.stop();
+		}
+		JLogger.getLogger().info("*************************         JSTF  TEARDOWN  FINISHED       ****************************************");
+
+	}
 }

@@ -21,6 +21,7 @@ public abstract class BaseTest {
 
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
+		JSTF.teardown();
 	}
 	
 	@Before
@@ -28,6 +29,7 @@ public abstract class BaseTest {
 		jDriver = new JDriver();
 		jDriver.start();
 		jAssert = new JAssert(jDriver);
+		
 	}
 
 	@After
