@@ -40,3 +40,40 @@ JSTF provides a series of enhanced selenium functions and libraries that enable 
 
 ### Framework Configuration
 JSFT uses yml file for configuration. Be default it is named jconfig.yml sitting under the project. To use a customised location, set envrionment vairible `jstf_config_file` on your machine before running test. 
+
+```
+#JSTF Configuration
+browser: "chrome"
+is_headless_browser: "false"
+reuse_browser: "false"
+#browserHub=http://selenium-grid.master.dev.a1028-01.ams02.nonp.qcpaws.qantas.com.au:4444/wd/hub
+
+#mockproxy & zap settings
+is_mock_proxy_enabled: "true"
+
+is_zap_enabled: "false"
+zap_server: 127.0.0.1:6666
+zap_app_path: "" #ZAP zipped binary, or start script file.
+zap_report_path: "target/ZAPReport.html"
+zap_log_file: "target/jstflogs/zap.log"
+
+isProxyEnabled: "false"
+proxyAddress: proxy.qcpaws.qantas.com.au:3128
+proxyBypass: 10.*, *.qcpaws.qantas.com.au, www-staging.qantas.com, 127.0.0.1
+
+#Corporrate Proxy Setup
+is_proxy_enabled: "false" #true, false
+proxy_addr: "proxy.qcpaws.qantas.com.au:3128"
+proxy_bypass: "10.*, *.qcpaws.qantas.com.au, www-staging.qantas.com, 127.0.0.1"
+
+#Selenium settings
+element_timeout: "30"
+assertion_timeout: "3"
+element_retrytimes: "5"
+default_window_size: "" #1024*768, default is max window
+
+
+#Accessibility(AXE) settings
+axe_report_level: critical #critical, serious, moderate, all
+axe_rules: all  #wcag2a, wcag2aa, wcag412,section508,section508.22.a, all
+```
