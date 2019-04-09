@@ -1,6 +1,6 @@
 # Java Selenium Test Framework
 
-JAVA SELENIUM TEST FRAMEWORK (JSTF) is aiming to build an automation test platform, consolidating most capabilities from the market in one. 
+JAVA SELENIUM TEST FRAMEWORK (JSTF) is aiming to build an automation test platform, consolidating major capabilities in one. 
 
 ### Getting started
 To use JSTF in your java + selenium tests or application, add the `JSTF` dependency to your pom:
