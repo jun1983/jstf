@@ -31,7 +31,7 @@ To use JSTF in your java + selenium tests or application, add the `JSTF` depende
 JSTF provides a series of enhanced selenium functions and libraries that enable users to run functional, non-functional testing with very little effort.
 
  - JDriver: A wrapped selenium web driver, more advanced and robust.
- - JElement: Much different from WebElement, JElement stores element locators instead of a real WebElement instance. It finds web elements when interactting it and automatically retry. (You will never see StaleElementReferenceException again) 
+ - JElement: Much different from WebElement, JElement stores element locators instead of a real WebElement instance. It finds web elements when interactting it and automatically retry. `You will never see StaleElementReferenceException again` 
  - JAXE: Automated Accesibility Testing library. Integrated with [AXE core](https://github.com/dequelabs/axe-core).
  - BrokenLinkHelper: Scan broken links in a page or inside an web element.
  - ServiceHelper: Send http request with Apache Http Client, auto adapting proxy setting in JSTF configuration. 
