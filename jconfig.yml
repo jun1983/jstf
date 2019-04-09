@@ -2,7 +2,7 @@
 browser: "chrome" #chrome, firefox.   remote driver & other browsers are coming soon.
 is_headless_browser: "false"
 reuse_browser: "false"
-#browserHub=http://selenium-grid.master.dev.a1028-01.ams02.nonp.qcpaws.qantas.com.au:4444/wd/hub
+#browserHub=http://browserstack:4444/wd/hub
 
 #mockproxy settings
 is_mock_proxy_enabled: "true"
