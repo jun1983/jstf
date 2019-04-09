@@ -1,4 +1,4 @@
-package unittests;
+package com.jstf.tests;
 
 import com.jstf.selenium.JElement;
 

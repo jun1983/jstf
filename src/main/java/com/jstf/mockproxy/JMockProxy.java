@@ -2,6 +2,7 @@ package com.jstf.mockproxy;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,13 @@ import com.jstf.config.JConfig;
 import com.jstf.utils.JLogger;
 
 import ch.qos.logback.classic.Logger;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import io.netty.handler.codec.http.DefaultFullHttpResponse;
+import io.netty.handler.codec.http.HttpMethod;
+import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.HttpResponse;
+import io.netty.handler.codec.http.HttpResponseStatus;
 import net.lightbody.bmp.BrowserMobProxy;
 import net.lightbody.bmp.BrowserMobProxyServer;
 import net.lightbody.bmp.core.har.Har;
@@ -20,6 +28,8 @@ import net.lightbody.bmp.filters.RequestFilterAdapter;
 import net.lightbody.bmp.filters.ResponseFilter;
 import net.lightbody.bmp.filters.ResponseFilterAdapter;
 import net.lightbody.bmp.proxy.CaptureType;
+import net.lightbody.bmp.util.HttpMessageContents;
+import net.lightbody.bmp.util.HttpMessageInfo;
 
 public class JMockProxy {
 	private boolean chainedOnly = false;
@@ -79,6 +89,9 @@ public class JMockProxy {
 			logger.info("Chained Mock Proxy: " + getChainedMockAddress() + " chain upstream to " + getUpstreamProxy());
 		}
 		
+		if(JConfig.IS_CORS_ENABLED) {
+			enableCORS();
+		}
 		return this;
 	}
 	
@@ -186,7 +199,7 @@ public class JMockProxy {
 	}
 	
 	/**
-	 * get all entries captured so far
+	 * get all entries captured so far and end current capture.
 	 * @return Json array including all requests and responses
 	 */
 	public JSONArray getAllEntriesFromHar() throws Exception {
@@ -216,7 +229,7 @@ public class JMockProxy {
 	}
 	
 	/**
-	 * get all request entries captured so far
+	 * get all request entries captured so far and end the current capture.
 	 * @return Json array including all requests
 	 */
 	public JSONArray getAllRequestsFromHar() throws Exception {
@@ -295,6 +308,92 @@ public class JMockProxy {
 		if(externalProxy!=null) {
 			externalProxy.blacklistRequests(urlPattern, 500);
 		}
+	}
+	
+	/**
+	 * Respond with TEMPORARY_REDIRECT code and given new url. 
+	 * @param originalUrlRegex
+	 * @param newUrl
+	 * @throws Exception
+	 */
+	public void redirectUrl(String originalUrlRegex, String newUrl) throws Exception {
+		addRequestFilter(new RequestFilter() {
+			@Override
+			public HttpResponse filterRequest(HttpRequest request, HttpMessageContents contents, HttpMessageInfo messageInfo) {
+				if(messageInfo.getOriginalUrl().matches(originalUrlRegex) && !request.getMethod().equals(HttpMethod.OPTIONS)) {
+					logger.info("Receive Matched request:" + messageInfo.getOriginalUrl());
+					logger.info("Redirect to:" + newUrl);
+
+					HttpResponse response = createShortCircuitResponse(HttpResponseStatus.TEMPORARY_REDIRECT, null, request, contents, messageInfo);
+					response.headers().set("location", newUrl);
+				    return response;
+				}
+				return null;
+			}
+		});
+	}
+	
+	/**
+	 * Silently forward original request to a new url. This interference is not visible in browser
+	 * @param originalUrlRegex
+	 * @param newUrl
+	 * @throws Exception
+	 */
+	public void forwardUrl(String originalUrlRegex, String newUrl) throws Exception {
+		addRequestFilter(new RequestFilter() {
+			@Override
+			public HttpResponse filterRequest(HttpRequest request, HttpMessageContents contents, HttpMessageInfo messageInfo) {
+				if(messageInfo.getOriginalUrl().matches(originalUrlRegex) && !request.getMethod().equals(HttpMethod.OPTIONS)) {
+					logger.info("Receive Matched request:" + messageInfo.getOriginalUrl());
+					logger.info("Forward to:" + newUrl);
+					request.setUri(newUrl);
+				}
+				return null;
+			}
+		});
+	}
+	
+	public HttpResponse createShortCircuitResponse(HttpResponseStatus responseStatus, String responseContent, HttpRequest request, HttpMessageContents contents, HttpMessageInfo messageInfo) {
+		logger.debug("Creating short circuit response to request..");
+		logger.debug(request.getMethod().name() + " " + messageInfo.getOriginalUrl());
+		
+		HttpResponse response;
+		if(responseContent==null) {
+			response = new DefaultFullHttpResponse(request.getProtocolVersion(), responseStatus);
+		}else {
+			ByteBuf buf = Unpooled.wrappedBuffer(responseContent.getBytes(StandardCharsets.UTF_8));
+			response = new DefaultFullHttpResponse(request.getProtocolVersion(), responseStatus, buf);
+		}
+		
+		addCORSHeader(response, messageInfo);
+		logger.debug("Short circuit response return..");
+
+		return response;
+	}
+	
+	public void enableCORS() throws Exception{
+		addRequestFilter(new RequestFilter() {
+			@Override
+			public HttpResponse filterRequest(HttpRequest request, HttpMessageContents contents, HttpMessageInfo messageInfo) {
+				if(request.getMethod().equals(HttpMethod.OPTIONS)) {
+					HttpResponse response = createShortCircuitResponse(HttpResponseStatus.NO_CONTENT, null, request, contents, messageInfo);
+					addCORSHeader(response, messageInfo);
+					response.headers().set("Access-Control-Max-Age", "3628800");
+					return response;
+				}
+				return null;
+			}
+		});
+	}
+	
+	private void addCORSHeader(HttpResponse response, HttpMessageInfo messageInfo) {
+		String origin = messageInfo.getOriginalRequest().headers().contains("Origin")? messageInfo.getOriginalRequest().headers().get("Origin") : "*";
+		response.headers().set("Access-Control-Allow-Origin", origin);		
+		response.headers().set("Access-Control-Allow-Credentials", "true");
+		String allowHeaders = messageInfo.getOriginalRequest().headers().contains("Access-Control-Request-Headers")?messageInfo.getOriginalRequest().headers().get("Access-Control-Request-Headers") : "*";
+		response.headers().set("Access-Control-Allow-Headers", allowHeaders);
+		response.headers().set("Access-Control-Allow-Methods", "GET,HEAD,PUT,PATCH,POST,DELETE");
+		response.headers().set("Connection", "close");
 	}
 	
 }

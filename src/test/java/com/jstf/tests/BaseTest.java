@@ -1,4 +1,4 @@
-package unittests;
+package com.jstf.tests;
 
 import org.junit.After;
 import org.junit.AfterClass;

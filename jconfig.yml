@@ -6,6 +6,7 @@ reuse_browser: "false"
 
 #mockproxy settings
 is_mock_proxy_enabled: "true"
+is_cors_enabled: "true" #only works when mock proxy enabled
 
 #zap settings
 is_zap_enabled: "false"
@@ -15,14 +16,14 @@ zap_report_path: "target/ZAPReport.html"
 zap_log_file: "target/jstflogs/zap.log"
 
 #proxy settings
-isProxyEnabled: "false"
-proxyAddress: 10.10.10.10:8080
-#proxyBypass: 10.*, 127.0.0.1
+is_proxy_enabled: "false"
+proxy_addr: 10.10.10.10:8080
+#proxy_bypass: 10.*, 127.0.0.1
 
 #Selenium settings
 element_timeout: "30"
 assertion_timeout: "3"
-element_retrytimes: "5"
+element_retrytimes: "10"
 default_window_size: "" #1024*768, default is max window
 
 

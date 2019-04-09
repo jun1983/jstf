@@ -12,6 +12,9 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.jstf.config.JConfig;
 import com.jstf.mockproxy.JMockProxy;
@@ -64,6 +67,44 @@ public class JDriver {
 	
 	public void getUrl(String url) throws Exception {
 		this.driver.get(url);
+	}
+	
+	/**
+	 * 
+	 * @param url destination url
+	 * @param titleContain string should be contained in page title
+	 * @throws Exception
+	 */
+	public void getUrl(String url, String titleContain) throws Exception {
+		getUrl(url, titleContain, JConfig.ELEMENT_TIMEOUT);
+	}
+
+	/**
+	 * 
+	 * @param url destination url
+	 * @param titleContain string should be contained in page title 
+	 * @param timeOutInSeconds wait time
+	 * @throws Exception
+	 */
+	public void getUrl(String url, String titleContain, int timeOutInSeconds) throws Exception {
+		ExpectedCondition<Boolean> expectedCondition = ExpectedConditions.titleContains(titleContain);
+		getUrl(url, expectedCondition, timeOutInSeconds);
+	}
+	
+	/**
+	 * 
+	 * @param url destination url
+	 * @param expectedCondition wait for condition after driver.get()
+	 * @param timeOutInSeconds time out in seconds
+	 */
+	public void getUrl(String url, ExpectedCondition<Boolean> expectedCondition, int timeOutInSeconds) {
+		this.driver.get(url);
+		new WebDriverWait(driver, timeOutInSeconds).until(expectedCondition);
+	}
+	
+	public void getUrl(String url, ExpectedCondition<Boolean> expectedCondition) {
+		this.driver.get(url);
+		new WebDriverWait(driver, JConfig.ELEMENT_TIMEOUT).until(expectedCondition);
 	}
 	
 	public JElement find(String cssSelector) {
