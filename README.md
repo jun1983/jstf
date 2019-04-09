@@ -38,3 +38,5 @@ JSTF provides a series of enhanced selenium functions and libraries that enable 
  - JMockProxy: Running a mock proxy behind web browser, programmatically control http traffic. It allows you to manipulate HTTP requests and responses, capture HTTP content, and export performance data as a [HAR file]. Inegrated with [BrowserMob Proxy](https://github.com/lightbody/browsermob-proxy) .
  - ZAP: ZAP security tool is also running behind the web browser. It scans all traffic during selenium tests and generate security test report after test. Inegrated with [OWASP Zed Attack Proxy](https://www.owasp.org/index.php/OWASP_Zed_Attack_Proxy_Project)
 
+### Framework Configuration
+JSFT uses yml file for configuration. Be default it is named jconfig.yml sitting under the project. To use a customised location, set envrionment vairible `jstf_config_file` on your machine before running test. 
