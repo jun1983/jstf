@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -413,7 +414,7 @@ public class JElement {
 		return getWebElements().size();
 	}
 	
-	public void focus() throws Exception{	
+	public void focus() throws Exception{
 		assertDisplayed();
 
 		for(int i = 0; i< JConfig.ELEMENT_RETRYTIMES; i++) {
@@ -429,6 +430,34 @@ public class JElement {
 			}
 		}
 		throw resultException;
+	}
+	
+	/**
+	 * Check element is at a fixed position. This function is to avoid to click on a moving element.
+	 * @return
+	 */
+	public boolean isPositioned() {
+		return isPositioned(JConfig.ELEMENT_TIMEOUT);
+	}
+	
+	/**
+	 * Check element is at a fixed position. This function is to avoid to click on a moving element.
+	 * @param timeOutInSeconds
+	 * @return
+	 */
+	public boolean isPositioned(int timeOutInSeconds) {
+		return new WebDriverWait(driver, timeOutInSeconds).until(new ExpectedCondition<Boolean>() {
+			@Override
+			public Boolean apply(WebDriver driver) {
+				try {
+					Point elementPosition = getWebElement().getLocation();
+					Thread.sleep(100);
+					return getWebElement().getLocation().equals(elementPosition);
+				}catch (Exception e) {
+					return false;
+				}
+			}
+		});
 	}
 	
 	private void assertDisplayed() throws Exception {
