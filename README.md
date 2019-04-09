@@ -63,8 +63,8 @@ proxyBypass: 10.*, *.qcpaws.qantas.com.au, www-staging.qantas.com, 127.0.0.1
 
 #Corporrate Proxy Setup
 is_proxy_enabled: "false" #true, false
-proxy_addr: "proxy.qcpaws.qantas.com.au:3128"
-proxy_bypass: "10.*, *.qcpaws.qantas.com.au, www-staging.qantas.com, 127.0.0.1"
+proxy_addr: "10.10.10.10:8080"
+proxy_bypass: ""
 
 #Selenium settings
 element_timeout: "30"
