@@ -1,12 +1,20 @@
 package com.jstf.tests;
 
+import java.sql.Driver;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.openqa.selenium.By;
 
 import com.jstf.utils.JLogger;
 
+import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.HttpResponse;
+import net.lightbody.bmp.filters.RequestFilter;
+import net.lightbody.bmp.filters.ResponseFilter;
 import net.lightbody.bmp.proxy.CaptureType;
+import net.lightbody.bmp.util.HttpMessageContents;
+import net.lightbody.bmp.util.HttpMessageInfo;
 
 public class MockProxyTest extends BaseTest {
 	
@@ -37,5 +45,34 @@ public class MockProxyTest extends BaseTest {
 			}
 		}
 		throw new Exception("shop request not received. Captured requests:" + requestsCaptured);
+	}
+	
+	@org.junit.Test
+	public void addHttpRequestHeaderTest() throws Exception {
+		jDriver.getMockProxy().addRequestFilter(new RequestFilter() {
+			@Override
+			public HttpResponse filterRequest(HttpRequest request, HttpMessageContents contents, HttpMessageInfo messageInfo) {
+				if(messageInfo.getOriginalUrl().equals(homepageUrl)){
+					request.headers().add("testHeader", "value");
+				}
+				return null;
+			}
+		});
+		
+		jDriver.getUrl(homepageUrl, "GitHub");
+	}
+	
+	@org.junit.Test
+	public void addHttpResponseHeaderTest() throws Exception {
+		jDriver.getMockProxy().addResponseFilter(new ResponseFilter() {
+			@Override
+			public void filterResponse(HttpResponse response, HttpMessageContents contents, HttpMessageInfo messageInfo) {
+				if(messageInfo.getOriginalUrl().equals(homepageUrl)) {
+					response.headers().add("testHeader", "value");
+				}
+			}
+		});
+		
+		jDriver.getUrl(homepageUrl, "GitHub");
 	}
 }

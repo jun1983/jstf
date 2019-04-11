@@ -454,7 +454,7 @@ public class JElement {
 			public Boolean apply(WebDriver driver) {
 				try {
 					Point elementPosition = getWebElement().getLocation();
-					Thread.sleep(100);
+					Thread.sleep(500);
 					return getWebElement().getLocation().equals(elementPosition);
 				}catch (Exception e) {
 					return false;

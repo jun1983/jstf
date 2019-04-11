@@ -2,6 +2,8 @@ package com.jstf.config;
 
 import static com.jstf.config.ConfigHelper.getConfig;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.jstf.utils.OSType;
 
 public class JConfig {
@@ -16,10 +18,12 @@ public class JConfig {
 	//ZAP Settings
 	public static final boolean IS_ZAP_ENABLED = getConfig("is_zap_enabled")==null? false : getConfig("is_zap_enabled").equals("true");
 	public static final String ZAP_SERVER = getConfig("zap_server")==null? "" : getConfig("zap_server");
-	public static final String ZAP_APP_PATH = getConfig("zap_app_path") == null? "" : getConfig("zap_app_path");
+	public static final String ZAP_APP_PATH = getConfig("zap_app_path") == null? "tools/ZAP_2.7.0" : StringUtils.strip(getConfig("zap_app_path"), "/");
 	public static final String ZAP_REPORT_PATH = getConfig("zap_report_path")==null? "target/ZAPReport.html" : getConfig("zap_report_path");
 	public static final String ZAP_LOG_FILE = getConfig("zap_log_file")==null? "target/jstflogs/zap.log" : getConfig("zap_log_file");
-
+	public static final String ZAP_BINARY_DOWNLOAD = getConfig("zap_binary_download")==null? "https://github.com/zaproxy/zaproxy/releases/download/2.7.0/ZAP_2.7.0_Core.tar.gz" : getConfig("zap_binary_download");
+	public static final boolean IS_ZAP_AUTO_INSTALL = getConfig("is_zap_auto_install")==null? false : getConfig("is_zap_auto_install").equals("true");
+	
 	public static final boolean IS_PROXY_ENABLED = getConfig("is_proxy_enabled")==null? false : getConfig("is_proxy_enabled").equals("true");
 	public static final String PROXY_ADDR = getConfig("proxy_addr")==null? "" : getConfig("proxy_addr");
 	public static final String PROXY_BYPASS = getConfig("proxy_bypass")==null? "" : getConfig("proxy_bypass");

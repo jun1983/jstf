@@ -1,10 +1,10 @@
 package com.jstf.zap;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.lang.ProcessBuilder.Redirect;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
@@ -21,20 +21,42 @@ public class ZAPProxy {
 	private static String host;
 	private static int port;
 	private static ClientApi clientApi;
-	private static String tmpZAPInstallPath = "target/tools";
+	private static final String zapAppPath = JConfig.ZAP_APP_PATH;
+
+	private static final String scriptFileName = JConfig.OS.equals(OSType.WINDOWS)? "zap.bat" : "zap.sh";
+	private static final String officialBinary="https://github.com/zaproxy/zaproxy/releases/download/2.7.0/ZAP_2.7.0_Core.tar.gz";
 	
 	public static void start(String listenAddress, int listenPort) throws Exception {
-		String zapAppPath = JConfig.ZAP_APP_PATH;
-		String scriptFile=zapAppPath;
+		String scriptFile;
 
 		File f = new File(zapAppPath);
+		
 		//Extract ZAP if does not exist
-		if (!f.exists() || f.isDirectory()) {
-			JLogger.getLogger().error("Critical Error: ZAP application is not found. Path: " + f.getAbsolutePath());
-			System.exit(-50000);
+		if (!f.exists()) {
+			if(!JConfig.IS_ZAP_AUTO_INSTALL) {
+				JLogger.getLogger().error("Critical Error: ZAP application is not found. Path: " + f.getAbsolutePath());
+				JLogger.getLogger().error("Please enable zap_auto_install and download server in configuration. \nInstalltion file size is around 35MB and it takes a few minutes to finish the installation.");
+				JLogger.getLogger().error("Alternatively you can install it manually and set zap_app_path to installation path.");
+				JLogger.getLogger().error("Official binary can be downloaded from: " + officialBinary);
+				System.exit(-50000);
+			}else {
+				JLogger.getLogger().warn("ZAP application is not found. Path: " + f.getAbsolutePath());
+				JLogger.getLogger().info("Start to download ZAP application from:" + JConfig.ZAP_BINARY_DOWNLOAD);
+				JLogger.getLogger().info("Installtion file size is around 35MB and it takes a few minutes to finish the installation.");
+			}
+		}
+				
+		if(JConfig.OS.equals(OSType.WINDOWS)) {
+			scriptFile = zapAppPath + File.separator + "zap.bat";
+		}else {
+			scriptFile = zapAppPath + "/ZAP_2.7.0/zap.sh";
+			//add permission
+		   Set<PosixFilePermission> permission = PosixFilePermissions.fromString("rwxr-xr-x");
+		   Files.setPosixFilePermissions(new File(scriptFile).toPath(), permission);
 		}
 		
-		String fileExtension = f.getName().substring(f.getName().lastIndexOf("."));;
+		/*
+		String fileExtension = f.getName().substring(f.getName().lastIndexOf("."));
 		
 		if(fileExtension.equals(".zip")) {
 			JLogger.getLogger().info("ZAP ZIP is found at:" + f.getAbsolutePath());
@@ -49,6 +71,7 @@ public class ZAPProxy {
 			   Files.setPosixFilePermissions(new File(scriptFile).toPath(), permission);
 			}
 		}
+		*/
 		
 		host = listenAddress;
 		port = listenPort;
@@ -105,8 +128,8 @@ public class ZAPProxy {
         JLogger.getLogger().warn("ZAP report is saved at " + new File(reportPath).getAbsolutePath());
     }
 	
-	private static void unzipZAP(File file) throws Exception {
-		InputStream inputstream = new FileInputStream(file);
-		ZipUtils.unzip(inputstream, new File(tmpZAPInstallPath));
+	private static void installZAP(String binaryUrl) throws Exception {
+		InputStream inputstream = new URL(binaryUrl).openStream();
+		ZipUtils.unzip(inputstream, new File(zapAppPath));
 	}
 }

@@ -11,9 +11,11 @@ is_cors_enabled: "true" #only works when mock proxy enabled
 #zap settings
 is_zap_enabled: "false"
 zap_server: 127.0.0.1:6666
-zap_app_path: "" #ZAP zipped binary, or start script file.
+zap_app_path: "tools/ZAP_2.7.0" #ZAP zipped binary, or start script file.
 zap_report_path: "target/ZAPReport.html"
 zap_log_file: "target/jstflogs/zap.log"
+zap_binary_download: "https://github.com/zaproxy/zaproxy/releases/download/2.7.0/ZAP_2.7.0_Core.tar.gz"
+is_zap_auto_install: "false"
 
 #proxy settings
 is_proxy_enabled: "false"
