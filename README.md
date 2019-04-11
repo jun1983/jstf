@@ -100,4 +100,4 @@ HTTP request manipulation is supported in JMockProxy. it is very easy to use and
 	});
 ```
 
-For more practical use of JMockProxy, please refer to [JMockProxyTestCases](#jMockProxyTestCases)
+For more practical use of JMockProxy, please refer to [JMockProxyTestCases](src/test/java/com/jstf/tests/MockProxyTest.java)
