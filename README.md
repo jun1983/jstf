@@ -75,3 +75,29 @@ default_window_size: "" #1024*768, default is max window
 axe_report_level: critical #critical, serious, moderate, all
 axe_rules: all  #wcag2a, wcag2aa, wcag412,section508,section508.22.a, all
 ```
+
+###HTTP Request Manipulation
+
+HTTP request manipulation is supported in JMockProxy. it is very easy to use and reliable. For most use cases, inspecting and modifying requests/responses, `addRequestFilter` and `addResponseFilter` will be sufficient. You can programmatically setup the injection rule before the request happens.
+```java
+    jDriver.getMockProxy().addRequestFilter(new RequestFilter() {
+        @Override
+        public HttpResponse filterRequest(HttpRequest request, HttpMessageContents contents, HttpMessageInfo messageInfo) {
+            if(messageInfo.getOriginalUrl().equals(homepageUrl)){
+                request.headers().add("testHeader", "value");
+            }
+            return null;
+		}
+	});
+    
+    jDriver.getMockProxy().addResponseFilter(new ResponseFilter() {
+		@Override
+		public void filterResponse(HttpResponse response, HttpMessageContents contents, HttpMessageInfo messageInfo) {
+			if(messageInfo.getOriginalUrl().equals(homepageUrl)) {
+				response.headers().add("testHeader", "value");
+			}
+		}
+	});
+```
+
+For more practical use of JMockProxy, please refer to [JMockProxyTestCases](#jMockProxyTestCases)
