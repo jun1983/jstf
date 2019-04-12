@@ -81,7 +81,10 @@ public class BrokenLinkHelper {
 		            String url = null;
 		            try {
 		            		url = queueOfLinks.take();
-		            		scanUrl(url);
+		            		int statusCode = scanUrl(url);
+		            		if(statusCode>399) {
+		            			brokenLinkList.add(url);
+		            		}
 		            } catch (InterruptedException e) {
 		                break;
 		            }

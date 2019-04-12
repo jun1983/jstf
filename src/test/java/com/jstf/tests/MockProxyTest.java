@@ -1,7 +1,5 @@
 package com.jstf.tests;
 
-import java.sql.Driver;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.openqa.selenium.By;
