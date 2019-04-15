@@ -1,8 +1,6 @@
 package com.jstf.tests;
 
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 
 import com.jstf.main.JSTF;
@@ -24,17 +22,5 @@ public abstract class BaseTest {
 		JSTF.teardown();
 	}
 	
-	@Before
-	public void setUp() throws Exception {
-		jDriver = new JDriver();
-		jDriver.start();
-		jAssert = new JAssert(jDriver);
-		
-	}
-
-	@After
-	public void tearDown() throws Exception {
-		jDriver.closeMockProxy();
-		jDriver.close();
-	}
+	
 }

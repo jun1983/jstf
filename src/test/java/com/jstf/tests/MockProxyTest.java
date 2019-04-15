@@ -2,8 +2,12 @@ package com.jstf.tests;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.junit.After;
+import org.junit.Before;
 import org.openqa.selenium.By;
 
+import com.jstf.selenium.JAssert;
+import com.jstf.selenium.JDriver;
 import com.jstf.utils.JLogger;
 
 import io.netty.handler.codec.http.HttpRequest;
@@ -15,6 +19,19 @@ import net.lightbody.bmp.util.HttpMessageContents;
 import net.lightbody.bmp.util.HttpMessageInfo;
 
 public class MockProxyTest extends BaseTest {
+	@Before
+	public void setUp() throws Exception {
+		jDriver = new JDriver();
+		jDriver.start();
+		jAssert = new JAssert(jDriver);
+		
+	}
+
+	@After
+	public void tearDown() throws Exception {
+		jDriver.closeMockProxy();
+		jDriver.close();
+	}
 	
 	@org.junit.Test
 	public void redirectUrlTest() throws Exception {

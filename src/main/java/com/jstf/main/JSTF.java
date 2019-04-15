@@ -65,6 +65,16 @@ public class JSTF {
 			JLogger.getLogger().error("Critical Error: Headless Chrome does not support ZAP. Please change browser to headed mode to use ZAP security testing.");
 			System.exit(-9997);
 		}
+		
+		if(JConfig.IS_MOCK_PROXY_ENABLED) {
+			JLogger.getLogger().error("Critical Error: Mock Proxy is not allowed on remote browser. To use remote browser, please disable mockproxy by changing IS_MOCK_PROXY_ENABLED.");
+			System.exit(-9987);
+		}
+		
+		if(JConfig.IS_ZAP_ENABLED) {
+			JLogger.getLogger().error("Critical Error: ZAP is not allowed on remote browser. To use remote browser, please disable ZAP in configuration.");
+			System.exit(-9986);
+		}
 	}
 	
 	public static void teardown() throws Exception {
