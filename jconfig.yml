@@ -1,8 +1,8 @@
 #JSTF Configuration
-browser: "chrome" #chrome, firefox.   remote driver & other browsers are coming soon.
+browser: "chrome" #chrome, firefox, remote. When use a remote driver, capabilities is provided on initiating jDriver.
+selenium_hub: "https://demo.perfectomobile.com/nexperience/perfectomobile/wd/hub/fast"
 is_headless_browser: "false"
 reuse_browser: "false"
-#browserHub=http://browserstack:4444/wd/hub
 
 #mockproxy settings
 is_mock_proxy_enabled: "true"

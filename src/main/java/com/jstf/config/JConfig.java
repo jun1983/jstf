@@ -9,6 +9,7 @@ import com.jstf.utils.OSType;
 public class JConfig {
 	
 	public static final String BROWSER = getConfig("browser")== null? "chrome" : getConfig("browser");
+	public static final String SELENIUM_HUB = getConfig("selenium_hub") == null? "" : getConfig("selenium_hub");
 	public static final boolean IS_HEADLESS_BROWSER = getConfig("is_headless_browser")==null? false : getConfig("is_headless_browser").equals("true");
 	
 	//Mock Proxy Settings

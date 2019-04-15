@@ -1,5 +1,6 @@
 package com.jstf.selenium;
 
+import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
@@ -12,6 +13,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -21,17 +23,35 @@ import com.jstf.mockproxy.JMockProxy;
 import com.jstf.utils.JLogger;
 
 import ch.qos.logback.classic.Logger;
+import lombok.Setter;
 
 public class JDriver {
 	private WebDriver driver;
 	private JMockProxy jMockProxy;
 	private Logger logger = JLogger.getLogger();
 	
+	@Setter
+	private MutableCapabilities remoteCapabilities;
+	
 	public JDriver() throws Exception {
 		if(JConfig.IS_MOCK_PROXY_ENABLED) {
 			this.jMockProxy = JMockProxy.retrieve();
 		}
 	}
+	
+	public JDriver(MutableCapabilities capabilities) throws Exception {
+		this.remoteCapabilities = capabilities;
+		if(JConfig.IS_MOCK_PROXY_ENABLED) {
+			this.jMockProxy = JMockProxy.retrieve();
+		}
+	}
+	
+	/**
+	 * Define a remote jDriver. This will ignore 'browser' setting in configuration. 
+	 * @param remoteHub
+	 * @param desiredCapabilities
+	 * @throws Exception
+	 */
 	
 	/**
 	 * 
@@ -142,6 +162,9 @@ public class JDriver {
 	}
 	
 	public JDriver start(BrowserType browserType) throws Exception{
+		if(browserType.equals(BrowserType.REMOTE)) {
+			return start(BrowserType.REMOTE, this.remoteCapabilities);
+		}
 		return start(browserType, JDriverOptions.getDefaultDriverOptions(browserType));
 	}
 	
@@ -172,6 +195,12 @@ public class JDriver {
 				 }
 			 }
 			 driver = new FirefoxDriver(firefoxOptions);
+			break;
+		case REMOTE:
+			if(proxy!=null) {
+				 driverOptions.setCapability(CapabilityType.PROXY, proxy);
+			 }
+			driver = new RemoteWebDriver(new URL(JConfig.SELENIUM_HUB), driverOptions);
 			break;
 		default:
 			throw new Exception(browserType + " is not supported.");

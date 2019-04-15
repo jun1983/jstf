@@ -83,6 +83,8 @@ public class JDriverOptions {
 		case FIREFOX:
 			validateDriverBinarySetting("webdriver.gecko.driver", "drivers/geckodriver" + (JConfig.OS.equals(OSType.WINDOWS)? ".exe" : ""));
 			break;
+		case REMOTE:
+			break;
 		default:
 			throw new Exception(JConfig.BROWSER + " is not supported.");
 		}
