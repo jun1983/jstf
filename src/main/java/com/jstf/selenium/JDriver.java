@@ -3,46 +3,45 @@ package com.jstf.selenium;
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
+import javax.jws.WebResult;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.safari.SafariDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import com.jstf.config.ConfigHelper;
 import com.jstf.config.JConfig;
 import com.jstf.mockproxy.JMockProxy;
 import com.jstf.utils.JLogger;
 
 import ch.qos.logback.classic.Logger;
-import lombok.Setter;
 
 public class JDriver {
 	private WebDriver driver;
+	private boolean isRemoteDriver = false;
 	private JMockProxy jMockProxy;
 	private Logger logger = JLogger.getLogger();
-	
-	@Setter
-	private MutableCapabilities remoteCapabilities;
 	
 	public JDriver() throws Exception {
 		if(JConfig.IS_MOCK_PROXY_ENABLED) {
 			this.jMockProxy = JMockProxy.retrieve();
 		}
-	}
-	
-	public JDriver(MutableCapabilities capabilities) throws Exception {
-		this.remoteCapabilities = capabilities;
-		if(JConfig.IS_MOCK_PROXY_ENABLED) {
-			this.jMockProxy = JMockProxy.retrieve();
+		
+		if(JConfig.IS_REMOTE_DRIVER) {
+			this.isRemoteDriver = true;
 		}
 	}
 	
@@ -153,59 +152,62 @@ public class JDriver {
 	
 	public JDriver start() throws Exception{
 		BrowserType browserType = BrowserType.fromString(JConfig.BROWSER);
-		return start(browserType);
-	}
-
-	public JDriver start(MutableCapabilities driverOptions) throws Exception{
-		BrowserType browserType = BrowserType.fromString(JConfig.BROWSER);
-		return start(browserType, driverOptions);
-	}
-	
-	public JDriver start(BrowserType browserType) throws Exception{
-		if(browserType.equals(BrowserType.REMOTE)) {
-			return start(BrowserType.REMOTE, this.remoteCapabilities);
+		if(!JConfig.IS_REMOTE_DRIVER) {
+			return startLocal(browserType);
+		}else{
+			return startRemote();
 		}
-		return start(browserType, JDriverOptions.getDefaultDriverOptions(browserType));
 	}
 	
-	public JDriver start(BrowserType browserType, MutableCapabilities driverOptions) throws Exception {
-		WebDriver driver;
-		
-		JDriverOptions.initDriverBinarySetting(browserType);
+	public JDriver startLocal(BrowserType browserType) throws Exception{
+		return startLocal(browserType, null);
+	}
+	
+	public JDriver startLocal(BrowserType browserType, MutableCapabilities extraCapabilities) throws Exception {
+		this.driver = startLocalDriver(browserType, extraCapabilities);
+		initWebDriver();
+		return this;
+	}
+	
+	public JDriver startRemote() throws Exception{
+		DesiredCapabilities remoteCapabilities = ConfigHelper.getRemoteCapability(JConfig.REMOTE_DRIVER_CAPABILITY);
 		Proxy proxy = getProxySetting();
-		
-		switch (browserType) {
-		case CHROME:
-			ChromeOptions chromeOptions = (ChromeOptions) driverOptions;
-			if(proxy!=null) {
-				 chromeOptions.setCapability(CapabilityType.PROXY, proxy);
-			 }
-			 driver = new ChromeDriver(chromeOptions);
-			 break;
-		case FIREFOX:
-			FirefoxOptions firefoxOptions = (FirefoxOptions) driverOptions;
-			 if(proxy!=null) {
-				 firefoxOptions.setCapability(CapabilityType.PROXY, proxy);
-				 if(proxy.getNoProxy()!=null) {
-					 String noProxy = proxy.getNoProxy();
+		remoteCapabilities.setCapability(CapabilityType.PROXY, proxy);
+		return startRemote(BrowserType.fromString(JConfig.BROWSER), remoteCapabilities);
+	}
+	
+	public JDriver startRemote(BrowserType browserType, MutableCapabilities remoteCapabilities) throws Exception{
+		System.out.println(remoteCapabilities);
+		Proxy proxy = getProxySetting();
+		if(proxy!=null) {
+			switch (browserType) {
+			case CHROME:
+				if(proxy!=null) {
+					remoteCapabilities.setCapability(CapabilityType.PROXY, proxy);
+				}
+				break;
+			case FIREFOX:
+				if(proxy!=null) {
 					 if(proxy.getNoProxy()!=null) {
-						 proxy.setNoProxy(null);
-						 firefoxOptions.getProfile().setPreference("network.proxy.no_proxies_on", noProxy);
+						 String noProxy = proxy.getNoProxy();
+						 if(proxy.getNoProxy()!=null) {
+							 proxy.setNoProxy(null);
+							 ((FirefoxOptions)remoteCapabilities).getProfile().setPreference("network.proxy.no_proxies_on", noProxy);
+						 }
 					 }
-				 }
-			 }
-			 driver = new FirefoxDriver(firefoxOptions);
-			break;
-		case REMOTE:
-			if(proxy!=null) {
-				 driverOptions.setCapability(CapabilityType.PROXY, proxy);
-			 }
-			driver = new RemoteWebDriver(new URL(JConfig.SELENIUM_HUB), driverOptions);
-			break;
-		default:
-			throw new Exception(browserType + " is not supported.");
+				}
+				break;
+			default:
+				throw new Exception(JConfig.BROWSER + " is not supported.");
+			}
 		}
 		
+		this.driver = new RemoteWebDriver(new URL(JConfig.SELENIUM_HUB), remoteCapabilities);
+		initWebDriver();
+		return this;
+	}
+	
+	private void initWebDriver() {
 		driver.manage().timeouts().implicitlyWait(JConfig.ELEMENT_TIMEOUT, TimeUnit.SECONDS);
 		driver.manage().timeouts().pageLoadTimeout(JConfig.ELEMENT_TIMEOUT, TimeUnit.SECONDS);
 
@@ -217,9 +219,59 @@ public class JDriver {
 			driver.manage().window().maximize();
 		}
 
-		logger.info("New " + (isMockProxied()? "Mock Proxied ":"") + "browser opened. ");
-		this.driver = driver;
-		return this;
+		logger.info("New " +  (isMockProxied()? "Mock Proxied ":"") + "browser opened. ");
+	}
+	
+	private WebDriver startLocalDriver(BrowserType browserType, MutableCapabilities extraCapabilities) throws Exception {
+		WebDriver driver = null;
+		MutableCapabilities driverOptions;
+		Proxy proxy = getProxySetting();
+		switch (browserType) {
+		case CHROME:
+			driverOptions = JDriverOptions.getDefaultChromeOptions();
+			if(proxy!=null) {
+				driverOptions.setCapability(CapabilityType.PROXY, proxy);
+			}
+			break;
+		case FIREFOX:
+			driverOptions = JDriverOptions.getDefaultFirefoxOptions();
+			if(proxy!=null) {
+				driverOptions.setCapability(CapabilityType.PROXY, proxy);
+				 if(proxy.getNoProxy()!=null) {
+					 String noProxy = proxy.getNoProxy();
+					 if(proxy.getNoProxy()!=null) {
+						 proxy.setNoProxy(null);
+						 ((FirefoxOptions)driverOptions).getProfile().setPreference("network.proxy.no_proxies_on", noProxy);
+					 }
+				 }
+			}
+			break;
+		default:
+			throw new Exception(JConfig.BROWSER + " is not supported.");
+		}
+		
+		if(extraCapabilities!=null) {
+			driverOptions.merge(extraCapabilities);
+		}
+		
+		JDriverOptions.initDriverBinarySetting(browserType);
+		switch (browserType) {
+		case CHROME:
+			driver = new ChromeDriver(driverOptions);
+			break;
+		case FIREFOX:
+			driver = new FirefoxDriver(driverOptions);
+			break;
+		case IE:
+			driver = new InternetExplorerDriver(driverOptions);
+			break;
+		case SAFARI:
+			driver = new SafariDriver(driverOptions);
+			break;
+		default:
+			throw new Exception(browserType + " is not supported.");
+		}
+		return driver;
 	}
 	
 	public void close() {
@@ -271,9 +323,5 @@ public class JDriver {
 			return null;
 		}
 		return proxy;
-	}
-	
-	
-	
-	
+	}	
 }

@@ -151,7 +151,6 @@ public class JElement {
 	}
 	
 	private List<WebElement> getSubElements(List<WebElement> elements, JSelector qBy){
-		@Cleanup JElementWait usingImplicitWait = new JElementWait(jd.getWebDriver(), 1);
 		List<WebElement> results = new ArrayList<>();
 		for (WebElement element : elements) {
 			results.addAll(element.findElements(qBy.getBy()));

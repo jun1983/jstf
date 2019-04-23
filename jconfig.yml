@@ -1,11 +1,13 @@
 #JSTF Configuration
-browser: "chrome" #chrome, firefox, remote. When use a remote driver, capabilities is provided on initiating jDriver.
-selenium_hub: "https://demo.perfectomobile.com/nexperience/perfectomobile/wd/hub/fast"
+browser: "chrome" #chrome, firefox, ie, safari
+is_remote_driver: "true"
+remote_driver_capability: "perfecto_win10_chrome73"
+selenium_hub: "https://demo.perfectomobile.com/nexperience/perfectomobile/wd/hub/fast" #only used when running a remote driver
 is_headless_browser: "false"
 reuse_browser: "false"
 
 #mockproxy settings
-is_mock_proxy_enabled: "true"
+is_mock_proxy_enabled: "false"
 is_cors_enabled: "true" #only works when mock proxy enabled
 
 #zap settings
@@ -32,3 +34,21 @@ default_window_size: "" #1024*768, default is max window
 #Accessibility(AXE) settings
 axe_report_level: critical #critical, serious, moderate, all
 axe_rules: all  #wcag2a, wcag2aa, wcag412,section508,section508.22.a, all
+
+
+#Remote Driver Capability Settings
+remote_capabilities:
+  perfecto_win10_chrome73:
+    securityToken: eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJzbFV4OFFBdjdVellIajd4YWstR0tTbE43UjFNSllDbC1TRVJiTlU1RFlFIn0.eyJqdGkiOiI0NTA4NzgwMS1kOWJhLTQwNDUtODk1MS1mOGJlNzQ0OTNlN2EiLCJleHAiOjAsIm5iZiI6MCwiaWF0IjoxNTU1MzEyMDk5LCJpc3MiOiJodHRwczovL2F1dGgucGVyZmVjdG9tb2JpbGUuY29tL2F1dGgvcmVhbG1zL2RlbW8tcGVyZmVjdG9tb2JpbGUtY29tIiwiYXVkIjoib2ZmbGluZS10b2tlbi1nZW5lcmF0b3IiLCJzdWIiOiIwNDY5ODZkMS1iNDBkLTQwMmQtYTcwOC1kYzRjMjY1MGYzMTgiLCJ0eXAiOiJPZmZsaW5lIiwiYXpwIjoib2ZmbGluZS10b2tlbi1nZW5lcmF0b3IiLCJhdXRoX3RpbWUiOjAsInNlc3Npb25fc3RhdGUiOiJhMDJiZjljZi0zOWQ2LTRhYjItOGZkYi0zNjk1NjlhMzJmODciLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX19.cK9vu9szw2MdRDESJLuaRt7TnFVfzN-SRpx2TkE7TW_wQmlGfWu-xUz3Ks4G3-AfjZkC2c6ZHYBT1h0z2p4m5kPOXCkrhTa9NDr6b-6HCJPk7vsq1D-IODAEgCBZi8-vPKK2YKdbQLBZFT26uu1WtByWaefDpgniDobrmzM1hN518-VZmC4SOsret_jbzAleRWzSC7bGcsya57dsvWwT87zpsg5fuo_MKrabaw4W5l8L5MBGt15MEurJdcopY1vM_QHnA4epIAtzjiWXoRpuEiMPdXmQJbs8CK_bwnT_gTGjAlcrARBx2BoMA-VDnayMSkTH2MMYbFjiyY_dYpGogw
+    platformName: Windows
+    platformVersion: "10"
+    browserName: Chrome
+    browserVersion: "73"
+    resolution: "1280x1024"
+    location: AP Sydney
+  browser_stack_win10_chrome62:
+    browser: Chrome
+    browser_version: "73.0"
+    os: Windows
+    os_version: "10"
+    resolution: "1920x1080"

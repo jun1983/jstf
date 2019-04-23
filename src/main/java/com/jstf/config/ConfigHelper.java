@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.yaml.snakeyaml.Yaml;
 
 import com.jstf.utils.JLogger;
@@ -17,9 +18,10 @@ public class ConfigHelper {
 	private static Logger logger = JLogger.getLogger();
 	private static Map<String, String> jstfConfig = new HashMap<>();
 	private static final String JSTF_CONFIG_FILE = "jstf_config_file";
+	private static String configFile;
 
 	static {		
-		String configFile = System.getenv(JSTF_CONFIG_FILE);
+		configFile = System.getenv(JSTF_CONFIG_FILE);
 		if(configFile==null || configFile.isEmpty()) {
 			configFile = "jconfig.yml";
 		}
@@ -67,6 +69,29 @@ public class ConfigHelper {
 			return null;
 		}
 	}
+	
+	public static DesiredCapabilities getRemoteCapability() {
+		String remoteCapability = JConfig.REMOTE_DRIVER_CAPABILITY;
+		return getRemoteCapability(remoteCapability);
+	}
+	
+	public static DesiredCapabilities getRemoteCapability(String remoteCapability) {
+		try {
+			logger.info("Read remote capability configuration from global configuration: " + new File(configFile).getAbsolutePath());
+			InputStream ios = new FileInputStream(configFile);
+			Yaml yaml = new Yaml();
+	        Map<String, Object> capConfigs = (Map)(((Map<String, Map>) yaml.load(ios)).get("remote_capabilities").get(remoteCapability));
+	        DesiredCapabilities capabilities = new DesiredCapabilities();
+	        for (String key : capConfigs.keySet()) {
+				capabilities.setCapability(key, capConfigs.get(key));
+			}
+	        return capabilities;
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.exit(-10012);
+		}
+		return null;
+	} 
 	
 	private static String getBambooVariable(String name) {
 		return System.getenv("bamboo_" + name);
