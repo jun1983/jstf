@@ -46,7 +46,7 @@ public class JElement {
 	
 	public JElement(JDriver jd, ElementSelectionType elementSelectionType, By... bys) {
 		this.jd = jd;
-		this.driver = jd.getWebDriver();
+		this.driver = jd.getDriver();
 		
 		for(int i=0;i<bys.length;i++) {
 			if(i==bys.length-1) {
@@ -60,7 +60,7 @@ public class JElement {
 	public JElement(JElement jElement, ElementSelectionType elementSelectionType, By... bys) {
 		this.byList = new ArrayList<>(jElement.byList);
 		this.jd = jElement.getJDriver();
-		this.driver = jd.getWebDriver();
+		this.driver = jd.getDriver();
 		
 		for(int i=0;i<bys.length;i++) {
 			if(i==bys.length-1) {

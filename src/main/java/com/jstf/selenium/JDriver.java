@@ -3,8 +3,6 @@ package com.jstf.selenium;
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
-import javax.jws.WebResult;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.MutableCapabilities;
@@ -28,56 +26,100 @@ import com.jstf.mockproxy.JMockProxy;
 import com.jstf.utils.JLogger;
 
 import ch.qos.logback.classic.Logger;
+import lombok.Getter;
+import lombok.Setter;
 
 public class JDriver {
+	@Setter @Getter
 	private WebDriver driver;
+	@Getter
 	private boolean isRemoteDriver = false;
+	private BrowserType browserType;
+	private String seleniumHub;
+	private MutableCapabilities capabilities;
+	@Setter @Getter
 	private JMockProxy jMockProxy;
 	private Logger logger = JLogger.getLogger();
 	
+	/**
+	 * Define a local / remote driver regarding to config
+	 * @throws Exception
+	*/
 	public JDriver() throws Exception {
+		this(BrowserType.fromString(JConfig.BROWSER), JConfig.IS_REMOTE_DRIVER);
+	}
+	
+	/**
+	 * Define a local driver
+	 * @param browserType
+	 * @throws Exception 
+	 */
+	public JDriver(BrowserType browserType) throws Exception {
+		this(browserType, false);
+	}
+	
+	private JDriver(BrowserType browserType, Boolean isRemoteDriver) throws Exception{
+		this.browserType = BrowserType.fromString(JConfig.BROWSER);
+		this.isRemoteDriver = isRemoteDriver;
+		
+		if(isRemoteDriver) {
+			this.seleniumHub = JConfig.SELENIUM_HUB;
+			this.capabilities = ConfigHelper.getRemoteCapability(JConfig.REMOTE_DRIVER_CAPABILITY);
+		}else {
+			this.capabilities = JDriverOptions.getDefaultDriverOptions(browserType);
+		}
+		
 		if(JConfig.IS_MOCK_PROXY_ENABLED) {
 			this.jMockProxy = JMockProxy.retrieve();
 		}
 		
-		if(JConfig.IS_REMOTE_DRIVER) {
-			this.isRemoteDriver = true;
+		Proxy proxy = getProxySetting();
+		if(proxy!=null) {
+			switch (browserType) {
+			case CHROME:
+				if(proxy!=null) {
+					capabilities.setCapability(CapabilityType.PROXY, proxy);
+				}
+				break;
+			case FIREFOX:
+				if(proxy!=null) {
+					 if(proxy.getNoProxy()!=null) {
+						 String noProxy = proxy.getNoProxy();
+						 if(proxy.getNoProxy()!=null) {
+							 proxy.setNoProxy(null);
+							 ((FirefoxOptions)capabilities).getProfile().setPreference("network.proxy.no_proxies_on", noProxy);
+						 }
+					 }
+				}
+				break;
+			default:
+				throw new Exception(JConfig.BROWSER + " is not supported.");
+			}
 		}
 	}
 	
 	/**
-	 * Define a remote jDriver. This will ignore 'browser' setting in configuration. 
-	 * @param remoteHub
-	 * @param desiredCapabilities
+	 * Define a remote driver
+	 * @param seleniumHub
+	 * @param capabilities
 	 * @throws Exception
 	 */
-	
-	/**
-	 * 
-	 * @param jMockProxy
-	 */
-	public JDriver(JMockProxy jMockProxy) {
-		this.jMockProxy = jMockProxy;
+	public JDriver(String seleniumHub, DesiredCapabilities capabilities) throws Exception {
+		this.seleniumHub = seleniumHub;
+		this.capabilities = capabilities;
 	}
 	
-	/**
-	 * 
-	 * @return Selenium Web Driver
-	 */
-	public WebDriver getWebDriver() {
-		return this.driver;
-	}
-	
-	public void setWebDriver(WebDriver driver) {
-		this.driver = driver;
+	public JDriver mergeCapabilities(DesiredCapabilities extraCapabilities) throws Exception {
+		if(driver!=null) {
+			throw new Exception("WebDriver is already started. Capabilities can only be set before starting driver.");
+		}
+		
+		this.capabilities.merge(extraCapabilities);
+		return this;
 	}
 	
 	public boolean isMockProxied() {
-		return this.jMockProxy!=null;
-	}
-	
-	public JMockProxy getMockProxy() {
-		return this.jMockProxy;
+		return this.jMockProxy != null;
 	}
 	
 	public void closeMockProxy() throws Exception {
@@ -151,63 +193,28 @@ public class JDriver {
 	}
 	
 	public JDriver start() throws Exception{
-		BrowserType browserType = BrowserType.fromString(JConfig.BROWSER);
-		if(!JConfig.IS_REMOTE_DRIVER) {
-			return startLocal(browserType);
-		}else{
-			return startRemote();
-		}
-	}
-	
-	public JDriver startLocal(BrowserType browserType) throws Exception{
-		return startLocal(browserType, null);
-	}
-	
-	public JDriver startLocal(BrowserType browserType, MutableCapabilities extraCapabilities) throws Exception {
-		this.driver = startLocalDriver(browserType, extraCapabilities);
-		initWebDriver();
-		return this;
-	}
-	
-	public JDriver startRemote() throws Exception{
-		DesiredCapabilities remoteCapabilities = ConfigHelper.getRemoteCapability(JConfig.REMOTE_DRIVER_CAPABILITY);
-		Proxy proxy = getProxySetting();
-		remoteCapabilities.setCapability(CapabilityType.PROXY, proxy);
-		return startRemote(BrowserType.fromString(JConfig.BROWSER), remoteCapabilities);
-	}
-	
-	public JDriver startRemote(BrowserType browserType, MutableCapabilities remoteCapabilities) throws Exception{
-		System.out.println(remoteCapabilities);
-		Proxy proxy = getProxySetting();
-		if(proxy!=null) {
+		if(!isRemoteDriver) {
+			JDriverOptions.initDriverBinarySetting(browserType);
 			switch (browserType) {
 			case CHROME:
-				if(proxy!=null) {
-					remoteCapabilities.setCapability(CapabilityType.PROXY, proxy);
-				}
+				driver = new ChromeDriver(capabilities);
 				break;
 			case FIREFOX:
-				if(proxy!=null) {
-					 if(proxy.getNoProxy()!=null) {
-						 String noProxy = proxy.getNoProxy();
-						 if(proxy.getNoProxy()!=null) {
-							 proxy.setNoProxy(null);
-							 ((FirefoxOptions)remoteCapabilities).getProfile().setPreference("network.proxy.no_proxies_on", noProxy);
-						 }
-					 }
-				}
+				driver = new FirefoxDriver(capabilities);
+				break;
+			case IE:
+				driver = new InternetExplorerDriver(capabilities);
+				break;
+			case SAFARI:
+				driver = new SafariDriver(capabilities);
 				break;
 			default:
-				throw new Exception(JConfig.BROWSER + " is not supported.");
+				throw new Exception(browserType + " is not supported.");
 			}
+		}else{
+			driver = new RemoteWebDriver(new URL(seleniumHub), capabilities);
 		}
 		
-		this.driver = new RemoteWebDriver(new URL(JConfig.SELENIUM_HUB), remoteCapabilities);
-		initWebDriver();
-		return this;
-	}
-	
-	private void initWebDriver() {
 		driver.manage().timeouts().implicitlyWait(JConfig.ELEMENT_TIMEOUT, TimeUnit.SECONDS);
 		driver.manage().timeouts().pageLoadTimeout(JConfig.ELEMENT_TIMEOUT, TimeUnit.SECONDS);
 
@@ -219,63 +226,12 @@ public class JDriver {
 			driver.manage().window().maximize();
 		}
 
-		logger.info("New " +  (isMockProxied()? "Mock Proxied ":"") + "browser opened. ");
-	}
-	
-	private WebDriver startLocalDriver(BrowserType browserType, MutableCapabilities extraCapabilities) throws Exception {
-		WebDriver driver = null;
-		MutableCapabilities driverOptions;
-		Proxy proxy = getProxySetting();
-		switch (browserType) {
-		case CHROME:
-			driverOptions = JDriverOptions.getDefaultChromeOptions();
-			if(proxy!=null) {
-				driverOptions.setCapability(CapabilityType.PROXY, proxy);
-			}
-			break;
-		case FIREFOX:
-			driverOptions = JDriverOptions.getDefaultFirefoxOptions();
-			if(proxy!=null) {
-				driverOptions.setCapability(CapabilityType.PROXY, proxy);
-				 if(proxy.getNoProxy()!=null) {
-					 String noProxy = proxy.getNoProxy();
-					 if(proxy.getNoProxy()!=null) {
-						 proxy.setNoProxy(null);
-						 ((FirefoxOptions)driverOptions).getProfile().setPreference("network.proxy.no_proxies_on", noProxy);
-					 }
-				 }
-			}
-			break;
-		default:
-			throw new Exception(JConfig.BROWSER + " is not supported.");
-		}
-		
-		if(extraCapabilities!=null) {
-			driverOptions.merge(extraCapabilities);
-		}
-		
-		JDriverOptions.initDriverBinarySetting(browserType);
-		switch (browserType) {
-		case CHROME:
-			driver = new ChromeDriver(driverOptions);
-			break;
-		case FIREFOX:
-			driver = new FirefoxDriver(driverOptions);
-			break;
-		case IE:
-			driver = new InternetExplorerDriver(driverOptions);
-			break;
-		case SAFARI:
-			driver = new SafariDriver(driverOptions);
-			break;
-		default:
-			throw new Exception(browserType + " is not supported.");
-		}
-		return driver;
+		logger.info("New " + (isRemoteDriver? "remote" : "local") + " " + (isMockProxied()? "Mock Proxied ":"") + " browser opened. ");
+		return this;
 	}
 	
 	public void close() {
-		this.getWebDriver().quit();
+		this.driver.quit();
 	}
 	
 	private Proxy getProxySetting() throws Exception {

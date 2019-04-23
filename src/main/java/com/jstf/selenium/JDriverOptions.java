@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Calendar;
 import java.util.Random;
 
+import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
@@ -14,7 +15,18 @@ import com.jstf.config.JConfig;
 import com.jstf.utils.JLogger;
 import com.jstf.utils.OSType;
 
-public class JDriverOptions {	
+public class JDriverOptions {
+	static MutableCapabilities getDefaultDriverOptions(BrowserType browserType) throws Exception {
+		switch (browserType) {
+		case CHROME:
+			return getDefaultChromeOptions();
+		case FIREFOX:
+			return getDefaultFirefoxOptions();
+		default:
+			throw new Exception(JConfig.BROWSER + " is not supported.");
+		}
+	}
+	
 	static ChromeOptions getDefaultChromeOptions() {
 		ChromeOptions chromeOptions = new ChromeOptions();
 		 chromeOptions.addArguments("test-type");

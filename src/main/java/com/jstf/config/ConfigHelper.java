@@ -77,7 +77,6 @@ public class ConfigHelper {
 	
 	public static DesiredCapabilities getRemoteCapability(String remoteCapability) {
 		try {
-			logger.info("Read remote capability configuration from global configuration: " + new File(configFile).getAbsolutePath());
 			InputStream ios = new FileInputStream(configFile);
 			Yaml yaml = new Yaml();
 	        Map<String, Object> capConfigs = (Map)(((Map<String, Map>) yaml.load(ios)).get("remote_capabilities").get(remoteCapability));

@@ -3,7 +3,6 @@ package com.jstf.tests;
 import org.junit.After;
 import org.junit.Before;
 
-import com.jstf.config.JConfig;
 import com.jstf.selenium.JAssert;
 import com.jstf.selenium.JDriver;
 import com.jstf.selenium.JElement;
@@ -12,8 +11,6 @@ import com.jstf.selenium.JElement;
 public class SignupTest extends BaseTest {
 	@Before
 	public void setUp() throws Exception {
-		System.out.println(JConfig.BROWSER);
-		System.out.println(JConfig.REMOTE_DRIVER_CAPABILITY);
 
 		jDriver = new JDriver();
 		jDriver.start();

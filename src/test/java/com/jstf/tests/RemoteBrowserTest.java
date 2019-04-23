@@ -42,7 +42,7 @@ public class RemoteBrowserTest {
 	public void signupWithLocalJDriver() throws Exception {
 		driver = createLocalDriver();
 		jDriver = new JDriver();
-		jDriver.setWebDriver(driver);
+		jDriver.setDriver(driver);
 		testGitHubRegistrationWithJDriver();
 	}
 	
@@ -50,7 +50,7 @@ public class RemoteBrowserTest {
 	public void signupWithPerfectoJDriver() throws Exception {
 		driver = createPerfectoDriver();
 		jDriver = new JDriver();
-		jDriver.setWebDriver(driver);
+		jDriver.setDriver(driver);
 		testGitHubRegistrationWithJDriver();
 	}
 	
@@ -58,7 +58,7 @@ public class RemoteBrowserTest {
 	public void signupWithBrowserStackJDriver() throws Exception {
 		driver = createBrowserStackDriver();
 		jDriver = new JDriver();
-		jDriver.setWebDriver(driver);
+		jDriver.setDriver(driver);
 		testGitHubRegistrationWithJDriver();
 	}
 	

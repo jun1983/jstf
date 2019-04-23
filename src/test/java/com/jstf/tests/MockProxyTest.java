@@ -37,7 +37,7 @@ public class MockProxyTest extends BaseTest {
 	public void redirectUrlTest() throws Exception {
 		jDriver.getUrl(homepageUrl, "GitHub");
 		
-		jDriver.getMockProxy().redirectUrl("https://shop.github.com/", "https://www.google.com/");
+		jDriver.getJMockProxy().redirectUrl("https://shop.github.com/", "https://www.google.com/");
 		jDriver.find(".footer").find(By.linkText("Shop")).click();
 
 		jAssert.titleContains("Google", 30);
@@ -47,10 +47,10 @@ public class MockProxyTest extends BaseTest {
 	public void captureRequestTest() throws Exception {
 		jDriver.getUrl(homepageUrl, "GitHub");
 		
-		jDriver.getMockProxy().startHarCapture("Shop Request", CaptureType.REQUEST_CONTENT, CaptureType.REQUEST_COOKIES);
+		jDriver.getJMockProxy().startHarCapture("Shop Request", CaptureType.REQUEST_CONTENT, CaptureType.REQUEST_COOKIES);
 		jDriver.find(".footer").find(By.linkText("Shop")).click();
 		Thread.sleep(5000);
-		JSONArray requestsCaptured = jDriver.getMockProxy().getAllRequestsFromHar();
+		JSONArray requestsCaptured = jDriver.getJMockProxy().getAllRequestsFromHar();
 		for (int i=0;i<requestsCaptured.length(); i++) {
 			JSONObject requestJson = requestsCaptured.getJSONObject(i);
 			String expectedRequest = "https://shop.github.com/";
@@ -64,7 +64,7 @@ public class MockProxyTest extends BaseTest {
 	
 	@org.junit.Test
 	public void addHttpRequestHeaderTest() throws Exception {
-		jDriver.getMockProxy().addRequestFilter(new RequestFilter() {
+		jDriver.getJMockProxy().addRequestFilter(new RequestFilter() {
 			@Override
 			public HttpResponse filterRequest(HttpRequest request, HttpMessageContents contents, HttpMessageInfo messageInfo) {
 				if(messageInfo.getOriginalUrl().equals(homepageUrl)){
@@ -79,7 +79,7 @@ public class MockProxyTest extends BaseTest {
 	
 	@org.junit.Test
 	public void addHttpResponseHeaderTest() throws Exception {
-		jDriver.getMockProxy().addResponseFilter(new ResponseFilter() {
+		jDriver.getJMockProxy().addResponseFilter(new ResponseFilter() {
 			@Override
 			public void filterResponse(HttpResponse response, HttpMessageContents contents, HttpMessageInfo messageInfo) {
 				if(messageInfo.getOriginalUrl().equals(homepageUrl)) {
