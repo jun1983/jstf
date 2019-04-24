@@ -40,7 +40,7 @@ public class JAXE {
 	}
 		
 	public JAXE(JDriver jDriver) throws Exception {
-		this(jDriver.getWebDriver());
+		this(jDriver.getDriver());
 	}
 	
 	public JAXE(WebDriver driver, List<Rule> rules, ReportLevel reportLevel) throws JSONException {
@@ -51,7 +51,7 @@ public class JAXE {
 	}
 	
 	public JAXE(JDriver jd, List<Rule> rules, ReportLevel reportLevel) throws JSONException {
-		this(jd.getWebDriver(), rules, reportLevel);
+		this(jd.getDriver(), rules, reportLevel);
 	}
 	
 	private void init(){

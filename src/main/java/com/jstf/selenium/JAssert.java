@@ -11,7 +11,7 @@ public class JAssert {
 	private WebDriver driver;
 	public JAssert(JDriver jDriver) {
 		this.jDriver = jDriver;
-		this.driver = jDriver.getWebDriver();
+		this.driver = jDriver.getDriver();
 	}
 	
 	public void urlEquals(String url, int timeOutInSeconds) throws Exception {

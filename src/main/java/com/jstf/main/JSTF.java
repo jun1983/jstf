@@ -1,7 +1,7 @@
 package com.jstf.main;
 
+import com.jstf.config.ConfigHelper;
 import com.jstf.config.JConfig;
-import com.jstf.selenium.BrowserType;
 import com.jstf.utils.JLogger;
 import com.jstf.zap.ZAPProxy;
 
@@ -37,12 +37,12 @@ public class JSTF {
 		}
 		
 		JLogger.getLogger().info("Test Settings Info:");
-		if(!BrowserType.fromString(JConfig.BROWSER).equals(BrowserType.REMOTE)) {
+		if(!JConfig.IS_REMOTE_DRIVER) {
 			JLogger.getLogger().info("Using local browser - " + JConfig.BROWSER);
 			JLogger.getLogger().info("Browser headless: " + (JConfig.IS_HEADLESS_BROWSER? "Yes":"No"));
 		}else {
 			JLogger.getLogger().info("Using remote browser.");
-			//JLogger.getLogger().info(Capabilities);
+			JLogger.getLogger().info(ConfigHelper.getRemoteCapability().toString());
 		}
 		
 		JLogger.getLogger().info("End of JSTF Steup.");
@@ -66,12 +66,12 @@ public class JSTF {
 			System.exit(-9997);
 		}
 		
-		if(JConfig.IS_MOCK_PROXY_ENABLED) {
+		if(JConfig.IS_MOCK_PROXY_ENABLED && JConfig.IS_REMOTE_DRIVER) {
 			JLogger.getLogger().error("Critical Error: Mock Proxy is not allowed on remote browser. To use remote browser, please disable mockproxy by changing IS_MOCK_PROXY_ENABLED.");
 			System.exit(-9987);
 		}
 		
-		if(JConfig.IS_ZAP_ENABLED) {
+		if(JConfig.IS_ZAP_ENABLED && JConfig.IS_REMOTE_DRIVER) {
 			JLogger.getLogger().error("Critical Error: ZAP is not allowed on remote browser. To use remote browser, please disable ZAP in configuration.");
 			System.exit(-9986);
 		}

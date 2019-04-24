@@ -5,10 +5,6 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.lang.ProcessBuilder.Redirect;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.attribute.PosixFilePermission;
-import java.nio.file.attribute.PosixFilePermissions;
-import java.util.Set;
 
 import org.zaproxy.clientapi.core.ClientApi;
 
@@ -27,7 +23,7 @@ public class ZAPProxy {
 	private static final String officialBinary="https://github.com/zaproxy/zaproxy/releases/download/2.7.0/ZAP_2.7.0_Core.tar.gz";
 	
 	public static void start(String listenAddress, int listenPort) throws Exception {
-		String scriptFile;
+		String scriptFile = zapAppPath + File.separator + scriptFileName;
 
 		File f = new File(zapAppPath);
 		
@@ -43,35 +39,21 @@ public class ZAPProxy {
 				JLogger.getLogger().warn("ZAP application is not found. Path: " + f.getAbsolutePath());
 				JLogger.getLogger().info("Start to download ZAP application from:" + JConfig.ZAP_BINARY_DOWNLOAD);
 				JLogger.getLogger().info("Installtion file size is around 35MB and it takes a few minutes to finish the installation.");
-			}
-		}
 				
-		if(JConfig.OS.equals(OSType.WINDOWS)) {
-			scriptFile = zapAppPath + File.separator + "zap.bat";
-		}else {
-			scriptFile = zapAppPath + "/ZAP_2.7.0/zap.sh";
-			//add permission
-		   Set<PosixFilePermission> permission = PosixFilePermissions.fromString("rwxr-xr-x");
-		   Files.setPosixFilePermissions(new File(scriptFile).toPath(), permission);
-		}
-		
-		/*
-		String fileExtension = f.getName().substring(f.getName().lastIndexOf("."));
-		
-		if(fileExtension.equals(".zip")) {
-			JLogger.getLogger().info("ZAP ZIP is found at:" + f.getAbsolutePath());
-			JLogger.getLogger().info("Unzip ZAP to:" + new File(tmpZAPInstallPath).getAbsolutePath());
-			unzipZAP(f);
-			if(JConfig.OS.equals(OSType.WINDOWS)) {
-				scriptFile = tmpZAPInstallPath + "/ZAP_2.7.0/zap.bat";
-			}else {
-				scriptFile = tmpZAPInstallPath + "/ZAP_2.7.0/zap.sh";
-				//add permission
-			   Set<PosixFilePermission> permission = PosixFilePermissions.fromString("rwxr-xr-x");
-			   Files.setPosixFilePermissions(new File(scriptFile).toPath(), permission);
+				
 			}
 		}
-		*/
+		
+		//Add execution permission to ZAP script.
+		if(!new File(scriptFile).canExecute()) {
+			try {
+				new File(scriptFile).setExecutable(true);
+			}catch (SecurityException e) {
+				e.printStackTrace();
+				JLogger.getLogger().error("Add execution permission to ZAP script failed. ");
+				System.exit(-43721);
+			}
+		}
 		
 		host = listenAddress;
 		port = listenPort;

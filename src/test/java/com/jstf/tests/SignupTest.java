@@ -11,6 +11,7 @@ import com.jstf.selenium.JElement;
 public class SignupTest extends BaseTest {
 	@Before
 	public void setUp() throws Exception {
+
 		jDriver = new JDriver();
 		jDriver.start();
 		jAssert = new JAssert(jDriver);
@@ -19,7 +20,6 @@ public class SignupTest extends BaseTest {
 
 	@After
 	public void tearDown() throws Exception {
-		jDriver.closeMockProxy();
 		jDriver.close();
 	}
 	
