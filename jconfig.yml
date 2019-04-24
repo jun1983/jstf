@@ -1,6 +1,6 @@
 #JSTF Configuration
 browser: "chrome" #chrome, firefox, ie, safari
-is_remote_driver: "true"
+is_remote_driver: "false"
 remote_driver_capability: "perfecto_win10_chrome73"
 selenium_hub: "https://demo.perfectomobile.com/nexperience/perfectomobile/wd/hub/fast" #only used when running a remote driver
 is_headless_browser: "false"
