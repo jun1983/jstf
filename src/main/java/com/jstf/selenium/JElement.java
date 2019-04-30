@@ -13,6 +13,9 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import com.jstf.accessibility.JAXE;
+import com.jstf.accessibility.JAXE.ReportLevel;
+import com.jstf.accessibility.JAXE.Rule;
 import com.jstf.config.JConfig;
 
 import lombok.Cleanup;
@@ -460,6 +463,14 @@ public class JElement {
 				}
 			}
 		});
+	}
+	
+	public void validateAccessibility() throws Exception {
+		new JAXE(jd).validate(this);
+	}
+	
+	public void validateAccessibility(List<Rule> rules, ReportLevel reportLevel) throws Exception {
+		new JAXE(jd, rules, reportLevel).validate(this);
 	}
 	
 	private void assertDisplayed() throws Exception {
