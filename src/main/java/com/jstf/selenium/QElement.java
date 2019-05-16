@@ -13,92 +13,92 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import com.jstf.accessibility.JAXE;
-import com.jstf.accessibility.JAXE.ReportLevel;
-import com.jstf.accessibility.JAXE.Rule;
-import com.jstf.config.JConfig;
+import com.jstf.accessibility.QAXE;
+import com.jstf.accessibility.QAXE.ReportLevel;
+import com.jstf.accessibility.QAXE.Rule;
+import com.jstf.config.QConfig;
 
 import lombok.Cleanup;
 
-public class JElement {
+public class QElement {
 	private static final int retryInterval = 100;
 	
-	private List<JSelector> byList = new ArrayList<>();
+	private List<QSelector> byList = new ArrayList<>();
 
-	private JDriver jd;
+	private QDriver qDriver;
 	private WebDriver driver;
 	
 	private Exception resultException = null;
 
 	
-	public JElement(JDriver jd, By... bys) {
-		this(jd, ElementSelectionType.ALL, bys);
+	public QElement(QDriver qDriver, By... bys) {
+		this(qDriver, ElementSelectionType.ALL, bys);
 	}
 	
-	public JElement(JElement jElement, String cssSelector) {
-		this(jElement, By.cssSelector(cssSelector));
+	public QElement(QElement qElement, String cssSelector) {
+		this(qElement, By.cssSelector(cssSelector));
 	}
 	
-	public JElement(JElement jElement, ElementSelectionType elementSelectionType, String cssSelector) {
-		this(jElement, elementSelectionType, By.cssSelector(cssSelector));
+	public QElement(QElement qElement, ElementSelectionType elementSelectionType, String cssSelector) {
+		this(qElement, elementSelectionType, By.cssSelector(cssSelector));
 	}
 	
-	public JElement(JElement jElement, By... bys) {
-		this(jElement, ElementSelectionType.ALL, bys);
+	public QElement(QElement qElement, By... bys) {
+		this(qElement, ElementSelectionType.ALL, bys);
 	}
 	
-	public JElement(JDriver jd, ElementSelectionType elementSelectionType, By... bys) {
-		this.jd = jd;
-		this.driver = jd.getDriver();
+	public QElement(QDriver qDriver, ElementSelectionType elementSelectionType, By... bys) {
+		this.qDriver = qDriver;
+		this.driver = qDriver.getDriver();
 		
 		for(int i=0;i<bys.length;i++) {
 			if(i==bys.length-1) {
-				byList.add(new JSelector(bys[i], elementSelectionType));
+				byList.add(new QSelector(bys[i], elementSelectionType));
 			}else {
-				byList.add(new JSelector(bys[i], ElementSelectionType.ALL));
+				byList.add(new QSelector(bys[i], ElementSelectionType.ALL));
 			}
 		}
 	}
 	
-	public JElement(JElement jElement, ElementSelectionType elementSelectionType, By... bys) {
-		this.byList = new ArrayList<>(jElement.byList);
-		this.jd = jElement.getJDriver();
-		this.driver = jd.getDriver();
+	public QElement(QElement qElement, ElementSelectionType elementSelectionType, By... bys) {
+		this.byList = new ArrayList<>(qElement.byList);
+		this.qDriver = qElement.getQDriver();
+		this.driver = qDriver.getDriver();
 		
 		for(int i=0;i<bys.length;i++) {
 			if(i==bys.length-1) {
-				byList.add(new JSelector(bys[i], elementSelectionType));
+				byList.add(new QSelector(bys[i], elementSelectionType));
 			}else {
-				byList.add(new JSelector(bys[i], ElementSelectionType.ALL));
+				byList.add(new QSelector(bys[i], ElementSelectionType.ALL));
 			}
 		}
 	}
 	
-	public JDriver getJDriver() {
-		return this.jd;
+	public QDriver getQDriver() {
+		return this.qDriver;
 	}
 	
-	public JElement find(By... bys) {
+	public QElement find(By... bys) {
 		return find(ElementSelectionType.ALL, bys);
 	}
 	
-	public JElement find(ElementSelectionType elementSelectionType, By... bys) {
-		return new JElement(this, elementSelectionType, bys);
+	public QElement find(ElementSelectionType elementSelectionType, By... bys) {
+		return new QElement(this, elementSelectionType, bys);
 	}
 		
-	public JElement find(String cssSelector) {
+	public QElement find(String cssSelector) {
 		return find(ElementSelectionType.ALL, cssSelector);
 	}
 	
-	public JElement find(ElementSelectionType elementSelectionType, String cssSelector) {
-		return new JElement(this, cssSelector);
+	public QElement find(ElementSelectionType elementSelectionType, String cssSelector) {
+		return new QElement(this, cssSelector);
 	}
 	
 	public List<WebElement> getWebElements() throws Exception {
-		@Cleanup JElementWait jElementWait = new JElementWait(driver, 1);
+		@Cleanup QDriverWait qDriverWait = new QDriverWait(qDriver, 1);
 		List<WebElement> elements = null;
 
-		for (JSelector qBy : byList) {
+		for (QSelector qBy : byList) {
 			if(elements==null) {
 				elements = driver.findElements(qBy.getBy());
 				elements = filterElementSelection(elements, qBy.getElementSelectionType());
@@ -153,7 +153,7 @@ public class JElement {
 		return elements.get(randomIndex);
 	}
 	
-	private List<WebElement> getSubElements(List<WebElement> elements, JSelector qBy){
+	private List<WebElement> getSubElements(List<WebElement> elements, QSelector qBy){
 		List<WebElement> results = new ArrayList<>();
 		for (WebElement element : elements) {
 			results.addAll(element.findElements(qBy.getBy()));
@@ -162,14 +162,14 @@ public class JElement {
 		return results;
 	}
 	
-	public JElement parent() throws Exception{
+	public QElement parent() throws Exception{
 		return find(By.xpath("./.."));
 	}
 
-	public JElement clear() throws Exception{
+	public QElement clear() throws Exception{
 		isDisplayed();
 		Exception resultException = null;
-		for(int i = 0; i< JConfig.ELEMENT_RETRYTIMES; i++) {
+		for(int i = 0; i< QConfig.ELEMENT_RETRYTIMES; i++) {
 			try{
 				focus();
 				getWebElement().clear();
@@ -182,10 +182,10 @@ public class JElement {
 		throw resultException;
 	}
 	
-	public JElement click() throws Exception {
+	public QElement click() throws Exception {
 		assertDisplayed();
 		Exception resultException = null;
-		for(int i = 0; i< JConfig.ELEMENT_RETRYTIMES; i++) {
+		for(int i = 0; i< QConfig.ELEMENT_RETRYTIMES; i++) {
 			try{
 				focus();
 				getWebElement().click();
@@ -198,14 +198,14 @@ public class JElement {
 		throw resultException;
 	}
 	
-	public JElement hover() throws Exception {
+	public QElement hover() throws Exception {
 		return hover(null);
 	}
 	
-	public JElement hover(ExpectedCondition<Boolean> expectedCondition) throws Exception {		
+	public QElement hover(ExpectedCondition<Boolean> expectedCondition) throws Exception {		
 		focus();
 		Exception resultException = null;
-		for(int i = 0; i< JConfig.ELEMENT_RETRYTIMES; i++) {
+		for(int i = 0; i< QConfig.ELEMENT_RETRYTIMES; i++) {
 			try{
 				new Actions(driver).moveToElement(this.getWebElement()).perform();
 				if(expectedCondition!=null) {
@@ -223,7 +223,7 @@ public class JElement {
 	public String getAttribute(String name) throws Exception{
 		assertExists();
 		Exception resultException = null;
-		for(int i = 0; i< JConfig.ELEMENT_RETRYTIMES; i++) {
+		for(int i = 0; i< QConfig.ELEMENT_RETRYTIMES; i++) {
 			try{
 				return getWebElement().getAttribute(name);
 			}catch(Exception e) {
@@ -237,7 +237,7 @@ public class JElement {
 	public String getTagName() throws Exception {
 		assertExists();
 		Exception resultException = null;
-		for(int i = 0; i< JConfig.ELEMENT_RETRYTIMES; i++) {
+		for(int i = 0; i< QConfig.ELEMENT_RETRYTIMES; i++) {
 			try{
 				return getWebElement().getTagName();
 			}catch(Exception e) {
@@ -251,7 +251,7 @@ public class JElement {
 	public String getText() throws Exception{
 		assertExists();
 		Exception resultException = null;
-		for(int i = 0; i< JConfig.ELEMENT_RETRYTIMES; i++) {
+		for(int i = 0; i< QConfig.ELEMENT_RETRYTIMES; i++) {
 			try{
 				return getWebElement().getText();
 			}catch(Exception e) {
@@ -265,7 +265,7 @@ public class JElement {
 	public String getValue() throws Exception{
 		assertExists();
 		Exception resultException = null;
-		for(int i = 0; i< JConfig.ELEMENT_RETRYTIMES; i++) {
+		for(int i = 0; i< QConfig.ELEMENT_RETRYTIMES; i++) {
 			try{
 				return getWebElement().getAttribute("value");
 			}catch(Exception e) {
@@ -277,24 +277,24 @@ public class JElement {
 	}
 	
 	public boolean isDisplayed() throws Exception {
-		return isDisplayed(JConfig.ELEMENT_TIMEOUT);
+		return isDisplayed(QConfig.ELEMENT_TIMEOUT);
 	}
 	
 	public boolean isDisplayed(int timeoutInSeconds) throws Exception{
 		try {
-			return new WebDriverWait(driver, timeoutInSeconds).until(JExpectedConditions.isDisplayed(this));
+			return new WebDriverWait(driver, timeoutInSeconds).until(QExpectedConditions.isDisplayed(this));
 		}catch (TimeoutException e) {
 			return false;
 		}
 	}
 	
 	public boolean exists() throws Exception {
-		return exists(JConfig.ELEMENT_TIMEOUT);
+		return exists(QConfig.ELEMENT_TIMEOUT);
 	}
 	
 	public boolean exists(int timeoutInSeconds) throws Exception{
 		try {
-			return new WebDriverWait(driver, timeoutInSeconds).until(JExpectedConditions.exists(this));
+			return new WebDriverWait(driver, timeoutInSeconds).until(QExpectedConditions.exists(this));
 		}catch (TimeoutException e) {
 			return false;
 		}
@@ -316,56 +316,56 @@ public class JElement {
 	}
 	
 	public boolean isEnabled() throws Exception {
-		return isEnabled(JConfig.ASSERTION_TIMEOUT);
+		return isEnabled(QConfig.ASSERTION_TIMEOUT);
 	}
 	
 	public boolean isEnabled(int timeoutInSeconds) throws Exception{
 		try {
-			return new WebDriverWait(driver, timeoutInSeconds).until(JExpectedConditions.isEnabled(this));
+			return new WebDriverWait(driver, timeoutInSeconds).until(QExpectedConditions.isEnabled(this));
 		}catch (TimeoutException e) {
 			return false;
 		}
 	}
 	
 	public boolean textEquals(String text) throws Exception {
-		return textEquals(text, JConfig.ASSERTION_TIMEOUT);
+		return textEquals(text, QConfig.ASSERTION_TIMEOUT);
 	}
 	
 	public boolean textEquals(String text, int timeoutInSeconds) throws Exception {
-		return new WebDriverWait(driver, timeoutInSeconds).until(JExpectedConditions.textEquals(this, text));
+		return new WebDriverWait(driver, timeoutInSeconds).until(QExpectedConditions.textEquals(this, text));
 	}
 	
 	public boolean textNotEquals(String text) throws Exception {
-		return textNotEquals(text, JConfig.ASSERTION_TIMEOUT);
+		return textNotEquals(text, QConfig.ASSERTION_TIMEOUT);
 	}
 	
 	public boolean textNotEquals(String text, int timeoutInSeconds) throws Exception {
-		return new WebDriverWait(driver, timeoutInSeconds).until(JExpectedConditions.textNotEquals(this, text));
+		return new WebDriverWait(driver, timeoutInSeconds).until(QExpectedConditions.textNotEquals(this, text));
 	}
 	
 	public boolean valueEquals(String value) throws Exception {
-		return valueEquals(value, JConfig.ASSERTION_TIMEOUT);
+		return valueEquals(value, QConfig.ASSERTION_TIMEOUT);
 	}
 	
 	public boolean valueEquals(String value, int timeoutInSeconds) throws Exception {
-		return new WebDriverWait(driver, timeoutInSeconds).until(JExpectedConditions.valueEquals(this, value));
+		return new WebDriverWait(driver, timeoutInSeconds).until(QExpectedConditions.valueEquals(this, value));
 	}
 	
 	public boolean valueNotEquals(String value) throws Exception {
-		return valueNotEquals(value, JConfig.ASSERTION_TIMEOUT);
+		return valueNotEquals(value, QConfig.ASSERTION_TIMEOUT);
 	}
 	
 	public boolean valueNotEquals(String value, int timeoutInSeconds) throws Exception {
-		return new WebDriverWait(driver, timeoutInSeconds).until(JExpectedConditions.valueNotEquals(this, value));
+		return new WebDriverWait(driver, timeoutInSeconds).until(QExpectedConditions.valueNotEquals(this, value));
 	}
 	
 	public boolean isNotDisplayed() throws Exception {
-		return isNotDisplayed(JConfig.ASSERTION_TIMEOUT);
+		return isNotDisplayed(QConfig.ASSERTION_TIMEOUT);
 	}
 	
 	public boolean isNotDisplayed(int timeoutInSeconds) throws Exception{
 		try {
-			return new WebDriverWait(driver, timeoutInSeconds).until(JExpectedConditions.isNotDisplayed(this));
+			return new WebDriverWait(driver, timeoutInSeconds).until(QExpectedConditions.isNotDisplayed(this));
 		}catch (TimeoutException e) {
 			return false;
 		}
@@ -380,20 +380,20 @@ public class JElement {
 		assertDisplayed();
 		
 		try {
-			return new WebDriverWait(driver, timeOutInSeconds).until(JExpectedConditions.isSelected(this));
+			return new WebDriverWait(driver, timeOutInSeconds).until(QExpectedConditions.isSelected(this));
 		}catch (Exception e) {
 			return false;
 		}
 	}
 	
-	public JElement input(String inputStr) throws Exception {
+	public QElement input(String inputStr) throws Exception {
 		return input(inputStr, inputStr);
 	}
 	
-	public JElement input(String inputStr, String expectedValue) throws Exception {
+	public QElement input(String inputStr, String expectedValue) throws Exception {
 		assertDisplayed();
 
-		for(int i = 0; i< JConfig.ELEMENT_RETRYTIMES; i++) {
+		for(int i = 0; i< QConfig.ELEMENT_RETRYTIMES; i++) {
 			try{
 				WebElement element = getWebElement();
 				this.clear();
@@ -419,7 +419,7 @@ public class JElement {
 	public void focus() throws Exception{
 		assertDisplayed();
 
-		for(int i = 0; i< JConfig.ELEMENT_RETRYTIMES; i++) {
+		for(int i = 0; i< QConfig.ELEMENT_RETRYTIMES; i++) {
 			try{
 				if(!isVisibleInViewport() && getWebElement().getSize().height<200) {
 					JavascriptExecutor je = (JavascriptExecutor) driver;
@@ -442,7 +442,7 @@ public class JElement {
 	 * @return
 	 */
 	public boolean isPositioned() {
-		return isPositioned(JConfig.ELEMENT_TIMEOUT);
+		return isPositioned(QConfig.ELEMENT_TIMEOUT);
 	}
 	
 	/**
@@ -466,11 +466,11 @@ public class JElement {
 	}
 	
 	public void validateAccessibility() throws Exception {
-		new JAXE(jd).validate(this);
+		new QAXE(qDriver).validate(this);
 	}
 	
 	public void validateAccessibility(List<Rule> rules, ReportLevel reportLevel) throws Exception {
-		new JAXE(jd, rules, reportLevel).validate(this);
+		new QAXE(qDriver, rules, reportLevel).validate(this);
 	}
 	
 	private void assertDisplayed() throws Exception {

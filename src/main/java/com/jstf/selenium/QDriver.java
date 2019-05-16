@@ -21,15 +21,15 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.jstf.config.ConfigHelper;
-import com.jstf.config.JConfig;
-import com.jstf.mockproxy.JMockProxy;
-import com.jstf.utils.JLogger;
+import com.jstf.config.QConfig;
+import com.jstf.mockproxy.QMockProxy;
+import com.jstf.utils.QLogger;
 
 import ch.qos.logback.classic.Logger;
 import lombok.Getter;
 import lombok.Setter;
 
-public class JDriver {
+public class QDriver {
 	@Setter @Getter
 	private WebDriver driver;
 	@Getter
@@ -38,15 +38,15 @@ public class JDriver {
 	private String seleniumHub;
 	private MutableCapabilities capabilities;
 	@Setter @Getter
-	private JMockProxy jMockProxy;
-	private Logger logger = JLogger.getLogger();
+	private QMockProxy qMockProxy;
+	private Logger logger = QLogger.getLogger();
 	
 	/**
 	 * Define a local / remote driver regarding to config
 	 * @throws Exception
 	*/
-	public JDriver() throws Exception {
-		this(BrowserType.fromString(JConfig.BROWSER), JConfig.IS_REMOTE_DRIVER);
+	public QDriver() throws Exception {
+		this(BrowserType.fromString(QConfig.BROWSER), QConfig.IS_REMOTE_DRIVER);
 	}
 	
 	/**
@@ -54,23 +54,23 @@ public class JDriver {
 	 * @param browserType
 	 * @throws Exception 
 	 */
-	public JDriver(BrowserType browserType) throws Exception {
+	public QDriver(BrowserType browserType) throws Exception {
 		this(browserType, false);
 	}
 	
-	private JDriver(BrowserType browserType, Boolean isRemoteDriver) throws Exception{
-		this.browserType = BrowserType.fromString(JConfig.BROWSER);
+	private QDriver(BrowserType browserType, Boolean isRemoteDriver) throws Exception{
+		this.browserType = BrowserType.fromString(QConfig.BROWSER);
 		this.isRemoteDriver = isRemoteDriver;
 		
 		if(isRemoteDriver) {
-			this.seleniumHub = JConfig.SELENIUM_HUB;
-			this.capabilities = ConfigHelper.getRemoteCapability(JConfig.REMOTE_DRIVER_CAPABILITY);
+			this.seleniumHub = QConfig.SELENIUM_HUB;
+			this.capabilities = ConfigHelper.getRemoteCapability(QConfig.REMOTE_DRIVER_CAPABILITY);
 		}else {
-			this.capabilities = JDriverOptions.getDefaultDriverOptions(browserType);
+			this.capabilities = QDriverOptions.getDefaultDriverOptions(browserType);
 		}
 		
-		if(JConfig.IS_MOCK_PROXY_ENABLED) {
-			this.jMockProxy = JMockProxy.retrieve();
+		if(QConfig.IS_MOCK_PROXY_ENABLED) {
+			this.qMockProxy = QMockProxy.retrieve();
 		}
 		
 		Proxy proxy = getProxySetting();
@@ -93,7 +93,7 @@ public class JDriver {
 				}
 				break;
 			default:
-				throw new Exception(JConfig.BROWSER + " is not supported.");
+				throw new Exception(QConfig.BROWSER + " is not supported.");
 			}
 		}
 	}
@@ -104,12 +104,12 @@ public class JDriver {
 	 * @param capabilities
 	 * @throws Exception
 	 */
-	public JDriver(String seleniumHub, DesiredCapabilities capabilities) throws Exception {
+	public QDriver(String seleniumHub, DesiredCapabilities capabilities) throws Exception {
 		this.seleniumHub = seleniumHub;
 		this.capabilities = capabilities;
 	}
 	
-	public JDriver mergeCapabilities(DesiredCapabilities extraCapabilities) throws Exception {
+	public QDriver mergeCapabilities(DesiredCapabilities extraCapabilities) throws Exception {
 		if(driver!=null) {
 			throw new Exception("WebDriver is already started. Capabilities can only be set before starting driver.");
 		}
@@ -119,11 +119,11 @@ public class JDriver {
 	}
 	
 	public boolean isMockProxied() {
-		return this.jMockProxy != null;
+		return this.qMockProxy != null;
 	}
 	
 	public void closeMockProxy() throws Exception {
-		this.jMockProxy.close();
+		this.qMockProxy.close();
 	}
 	
 	public void getUrl(String url) throws Exception {
@@ -137,7 +137,7 @@ public class JDriver {
 	 * @throws Exception
 	 */
 	public void getUrl(String url, String titleContain) throws Exception {
-		getUrl(url, titleContain, JConfig.ELEMENT_TIMEOUT);
+		getUrl(url, titleContain, QConfig.ELEMENT_TIMEOUT);
 	}
 
 	/**
@@ -165,23 +165,23 @@ public class JDriver {
 	
 	public void getUrl(String url, ExpectedCondition<Boolean> expectedCondition) {
 		this.driver.get(url);
-		new WebDriverWait(driver, JConfig.ELEMENT_TIMEOUT).until(expectedCondition);
+		new WebDriverWait(driver, QConfig.ELEMENT_TIMEOUT).until(expectedCondition);
 	}
 	
-	public JElement find(String cssSelector) {
+	public QElement find(String cssSelector) {
 		return find(By.cssSelector(cssSelector));
 	}
 	
-	public JElement find(ElementSelectionType elementSelectionType, String cssSelector) {
+	public QElement find(ElementSelectionType elementSelectionType, String cssSelector) {
 		return find(elementSelectionType, By.cssSelector(cssSelector));
 	}
 	
-	public JElement find(By... bys) {
+	public QElement find(By... bys) {
 		return find(ElementSelectionType.ALL, bys);
 	}
 	
-	public JElement find(ElementSelectionType elementSelectionType, By... bys) {
-		return new JElement(this, elementSelectionType, bys);
+	public QElement find(ElementSelectionType elementSelectionType, By... bys) {
+		return new QElement(this, elementSelectionType, bys);
 	}
 	
 	public String getTitle() {
@@ -192,9 +192,9 @@ public class JDriver {
 		return driver.getCurrentUrl();
 	}
 	
-	public JDriver start() throws Exception{
+	public QDriver start() throws Exception{
 		if(!isRemoteDriver) {
-			JDriverOptions.initDriverBinarySetting(browserType);
+			QDriverOptions.initDriverBinarySetting(browserType);
 			switch (browserType) {
 			case CHROME:
 				driver = new ChromeDriver(capabilities);
@@ -215,12 +215,12 @@ public class JDriver {
 			driver = new RemoteWebDriver(new URL(seleniumHub), capabilities);
 		}
 		
-		driver.manage().timeouts().implicitlyWait(JConfig.ELEMENT_TIMEOUT, TimeUnit.SECONDS);
-		driver.manage().timeouts().pageLoadTimeout(JConfig.ELEMENT_TIMEOUT, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(QConfig.ELEMENT_TIMEOUT, TimeUnit.SECONDS);
+		driver.manage().timeouts().pageLoadTimeout(QConfig.ELEMENT_TIMEOUT, TimeUnit.SECONDS);
 
-		if(JConfig.DEFAULT_WINDOW_SIZE!=null && !JConfig.DEFAULT_WINDOW_SIZE.isEmpty()) {
-			int width = Integer.parseInt(JConfig.DEFAULT_WINDOW_SIZE.split("[*]")[0]);
-			int height = Integer.parseInt(JConfig.DEFAULT_WINDOW_SIZE.split("[*]")[1]);
+		if(QConfig.DEFAULT_WINDOW_SIZE!=null && !QConfig.DEFAULT_WINDOW_SIZE.isEmpty()) {
+			int width = Integer.parseInt(QConfig.DEFAULT_WINDOW_SIZE.split("[*]")[0]);
+			int height = Integer.parseInt(QConfig.DEFAULT_WINDOW_SIZE.split("[*]")[1]);
 			driver.manage().window().setSize(new Dimension(width, height));
 		}else {
 			driver.manage().window().maximize();
@@ -237,13 +237,13 @@ public class JDriver {
 	private Proxy getProxySetting() throws Exception {
 		Proxy proxy = new Proxy();
 		if(isMockProxied()) {
-			if(this.jMockProxy.getChainedMockAddress()==null) {
+			if(this.qMockProxy.getChainedMockAddress()==null) {
 				//Mockproxy goes directly to internet
-				String PROXY = jMockProxy.getDirectMockAddress();
+				String PROXY = qMockProxy.getDirectMockAddress();
 				proxy.setHttpProxy(PROXY).setFtpProxy(PROXY).setSslProxy(PROXY);
-			 }else if(jMockProxy.getDirectMockAddress()==null) {
+			 }else if(qMockProxy.getDirectMockAddress()==null) {
 				 //Chains all Mockproxy traffic to upstream proxy
-				 String PROXY = jMockProxy.getChainedMockAddress();
+				 String PROXY = qMockProxy.getChainedMockAddress();
 				 proxy.setHttpProxy(PROXY).setFtpProxy(PROXY).setSslProxy(PROXY);
 			 }
 			 else {
@@ -268,13 +268,13 @@ public class JDriver {
 				 proxy.setProxyAutoconfigUrl(pacFile);
 				 */
 			 }
-		} else if(JConfig.IS_ZAP_ENABLED) {
-			String PROXY = JConfig.ZAP_SERVER;
+		} else if(QConfig.IS_ZAP_ENABLED) {
+			String PROXY = QConfig.ZAP_SERVER;
 			proxy.setHttpProxy(PROXY).setFtpProxy(PROXY).setSslProxy(PROXY);
-		} else if (JConfig.IS_PROXY_ENABLED) {
-			String PROXY = JConfig.PROXY_ADDR;
+		} else if (QConfig.IS_PROXY_ENABLED) {
+			String PROXY = QConfig.PROXY_ADDR;
 			proxy.setHttpProxy(PROXY).setFtpProxy(PROXY).setSslProxy(PROXY)
-					.setNoProxy(JConfig.PROXY_BYPASS);
+					.setNoProxy(QConfig.PROXY_BYPASS);
 		} else {
 			return null;
 		}

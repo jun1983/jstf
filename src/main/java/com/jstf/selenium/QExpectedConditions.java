@@ -10,7 +10,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 
-public class JExpectedConditions{
+public class QExpectedConditions{
 	
 	public static ExpectedCondition<Boolean> titleContainsIgnoreCase(final String title) {
 	    return new ExpectedCondition<Boolean>() {
@@ -57,13 +57,13 @@ public class JExpectedConditions{
 	    };
 	}
 	
-	public static ExpectedCondition<Boolean> textContains(final JElement je, final String text) {
+	public static ExpectedCondition<Boolean> textContains(final QElement qElement, final String text) {
 	    return new ExpectedCondition<Boolean>() {
 		    String actualText = "";
 	    		@Override
 		      public Boolean apply(WebDriver driver) {
 		        try {
-		        		actualText = je.getText();
+		        		actualText = qElement.getText();
 					return actualText.contains(text);
 				} catch (Exception e) {
 					return false;
@@ -77,13 +77,13 @@ public class JExpectedConditions{
 		};
 	}
 	
-	public static ExpectedCondition<Boolean> textContainsIgnoreCase(final JElement je, final String text) {
+	public static ExpectedCondition<Boolean> textContainsIgnoreCase(final QElement qElement, final String text) {
 		 return new ExpectedCondition<Boolean>() {
 			    String actualText = "";
 		    		@Override
 			      public Boolean apply(WebDriver driver) {
 			        try {
-			        		actualText = je.getText();
+			        		actualText = qElement.getText();
 						return StringUtils.containsIgnoreCase(actualText, text);
 					} catch (Exception e) {
 						return false;
@@ -97,12 +97,12 @@ public class JExpectedConditions{
 			};
 	}
 	
-	public static ExpectedCondition<Boolean> isDisplayed(final JElement jElement){
+	public static ExpectedCondition<Boolean> isDisplayed(final QElement qElement){
 		return new ExpectedCondition<Boolean>() {
 			@Override
 			public Boolean apply(WebDriver driver) {
 				try {
-					List<WebElement> elements = jElement.getWebElements();
+					List<WebElement> elements = qElement.getWebElements();
 					if(elements.size()==0) {
 						return false;
 					}else {
@@ -120,12 +120,12 @@ public class JExpectedConditions{
 		   };
 	}
 	
-	public static ExpectedCondition<Boolean> exists(final JElement jElement){
+	public static ExpectedCondition<Boolean> exists(final QElement qElement){
 		return new ExpectedCondition<Boolean>() {
 			@Override
 			public Boolean apply(WebDriver driver) {
 				try {
-					return jElement.size()>0;
+					return qElement.size()>0;
 				} catch (Exception e) {
 					return false;
 				}
@@ -133,12 +133,12 @@ public class JExpectedConditions{
 		   };
 	}
 	
-	public static ExpectedCondition<Boolean> isEnabled(final JElement JElement){
+	public static ExpectedCondition<Boolean> isEnabled(final QElement qElement){
 		return new ExpectedCondition<Boolean>() {
 			@Override
 			public Boolean apply(WebDriver driver) {
 				try {
-					return JElement.getWebElement().isEnabled();
+					return qElement.getWebElement().isEnabled();
 				} catch (Exception e) {
 					return false;
 				}
@@ -147,12 +147,12 @@ public class JExpectedConditions{
 		   };
 	}
 	
-	public static ExpectedCondition<Boolean> isNotDisplayed(final JElement JElement){
+	public static ExpectedCondition<Boolean> isNotDisplayed(final QElement qElement){
 		return new ExpectedCondition<Boolean>() {
 			@Override
 			public Boolean apply(WebDriver driver) {
 				try {
-					return !JElement.getWebElement().isDisplayed();
+					return !qElement.getWebElement().isDisplayed();
 				} catch (NotFoundException e) {
 					return true;
 				} catch (StaleElementReferenceException e) {
@@ -165,12 +165,12 @@ public class JExpectedConditions{
 		   };
 	}
 	
-	public static ExpectedCondition<Boolean> isSelected(final JElement jElement){
+	public static ExpectedCondition<Boolean> isSelected(final QElement qElement){
 		return new ExpectedCondition<Boolean>() {
 			@Override
 			public Boolean apply(WebDriver driver) {
 				try {
-					return jElement.getWebElement().isSelected()? true : false;
+					return qElement.getWebElement().isSelected()? true : false;
 				} catch (Exception e) {
 					return false;
 				}
@@ -179,12 +179,12 @@ public class JExpectedConditions{
 		   };
 	}
 	
-	public static ExpectedCondition<Boolean> attributeContains(final JElement jElement, String attribute, String value){
+	public static ExpectedCondition<Boolean> attributeContains(final QElement qElement, String attribute, String value){
 		return new ExpectedCondition<Boolean>() {
 			@Override
 			public Boolean apply(WebDriver driver) {
 				try {
-					return jElement.getAttribute(attribute).contains(value);
+					return qElement.getAttribute(attribute).contains(value);
 				} catch (Exception e) {
 					return false;
 				}
@@ -192,12 +192,12 @@ public class JExpectedConditions{
 		   };
 	}
 	
-	public static ExpectedCondition<Boolean> attributeNotEquals(final JElement jElement, String attribute, String value){
+	public static ExpectedCondition<Boolean> attributeNotEquals(final QElement qElement, String attribute, String value){
 		return new ExpectedCondition<Boolean>() {
 			@Override
 			public Boolean apply(WebDriver driver) {
 				try {
-					return !jElement.getAttribute(attribute).equals(value);
+					return !qElement.getAttribute(attribute).equals(value);
 				} catch (Exception e) {
 					return false;
 				}
@@ -205,12 +205,12 @@ public class JExpectedConditions{
 		   };
 	}
 	
-	public static ExpectedCondition<Boolean> textEquals(final JElement jElement, final String text) {
+	public static ExpectedCondition<Boolean> textEquals(final QElement qElement, final String text) {
 	    return new ExpectedCondition<Boolean>() {
 		      @Override
 		      public Boolean apply(WebDriver driver) {
 		        try {
-					return jElement.getText().equals(text);
+					return qElement.getText().equals(text);
 				} catch (Exception e) {
 					return false;
 				}
@@ -219,7 +219,7 @@ public class JExpectedConditions{
 		      @Override
 		      public String toString() {
 		        try {
-					return String.format("expected to have text \"%s\". Actual text: \"%s\"", text, jElement.getText());
+					return String.format("expected to have text \"%s\". Actual text: \"%s\"", text, qElement.getText());
 				} catch (Exception e) {
 					return e.getMessage();
 				}
@@ -227,12 +227,12 @@ public class JExpectedConditions{
 		};
 	}
 	
-	public static ExpectedCondition<Boolean> valueEquals(final JElement jElement, final String value) {
+	public static ExpectedCondition<Boolean> valueEquals(final QElement qElement, final String value) {
 	    return new ExpectedCondition<Boolean>() {
 		      @Override
 		      public Boolean apply(WebDriver driver) {
 		        try {
-					return jElement.getAttribute("value").equals(value);
+					return qElement.getAttribute("value").equals(value);
 				} catch (Exception e) {
 					return false;
 				}
@@ -241,7 +241,7 @@ public class JExpectedConditions{
 		      @Override
 		      public String toString() {
 		        try {
-					return String.format("expected to have value \"%s\". Actual text: \"%s\"", value, jElement.getAttribute("value"));
+					return String.format("expected to have value \"%s\". Actual text: \"%s\"", value, qElement.getAttribute("value"));
 				} catch (Exception e) {
 					return e.getMessage();
 				}
@@ -249,12 +249,12 @@ public class JExpectedConditions{
 		};
 	}
 	
-	public static ExpectedCondition<Boolean> textNotEquals(final JElement jElement, String text){
+	public static ExpectedCondition<Boolean> textNotEquals(final QElement qElement, String text){
 		return new ExpectedCondition<Boolean>() {
 			@Override
 			public Boolean apply(WebDriver driver) {
 				try {
-					return !jElement.getText().equals(text);
+					return !qElement.getText().equals(text);
 				} catch (Exception e) {
 					return false;
 				}
@@ -262,12 +262,12 @@ public class JExpectedConditions{
 		   };
 	}
 	
-	public static ExpectedCondition<Boolean> valueNotEquals(final JElement jElement, String value){
+	public static ExpectedCondition<Boolean> valueNotEquals(final QElement qElement, String value){
 		return new ExpectedCondition<Boolean>() {
 			@Override
 			public Boolean apply(WebDriver driver) {
 				try {
-					return !jElement.getAttribute("value").equals(value);
+					return !qElement.getAttribute("value").equals(value);
 				} catch (Exception e) {
 					return false;
 				}

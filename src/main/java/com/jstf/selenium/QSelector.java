@@ -5,11 +5,11 @@ import org.openqa.selenium.By;
 import lombok.Data;
 
 @Data
-public class JSelector {
+public class QSelector {
 	private By by;
 	private ElementSelectionType elementSelectionType;
 	
-	public JSelector(By by, ElementSelectionType elementSelectionType) {
+	public QSelector(By by, ElementSelectionType elementSelectionType) {
 		this.by = by;
 		this.elementSelectionType = elementSelectionType;
 	}

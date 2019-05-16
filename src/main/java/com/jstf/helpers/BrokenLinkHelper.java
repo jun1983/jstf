@@ -20,7 +20,8 @@ import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import com.jstf.utils.JLogger;
+import com.jstf.selenium.QDriver;
+import com.jstf.utils.QLogger;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -48,6 +49,10 @@ public class BrokenLinkHelper {
 	
 	public BrokenLinkHelper(WebDriver driver) throws MalformedURLException {
 		this(new WebDriverWait(driver, 30).until(ExpectedConditions.visibilityOfElementLocated(By.tagName("body"))));
+	}
+	
+	public BrokenLinkHelper(QDriver qDriver) throws MalformedURLException {
+		this(qDriver.getDriver());
 	}
 	
 	public BrokenLinkHelper(WebElement element) throws MalformedURLException {
@@ -99,7 +104,7 @@ public class BrokenLinkHelper {
 			}
 		}
 		
-		JLogger.getLogger().info(linkSet.size() + " links scanned. " + brokenLinkList.size() + " broken links found.");
+		QLogger.getLogger().info(linkSet.size() + " links scanned. " + brokenLinkList.size() + " broken links found.");
 		return brokenLinkList;
 	}
 	

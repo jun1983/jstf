@@ -3,39 +3,39 @@ package com.jstf.tests;
 import org.junit.After;
 import org.junit.Before;
 
-import com.jstf.selenium.JAssert;
-import com.jstf.selenium.JDriver;
-import com.jstf.selenium.JElement;
+import com.jstf.selenium.QAssert;
+import com.jstf.selenium.QDriver;
+import com.jstf.selenium.QElement;
 
 
 public class SignupTest extends BaseTest {
 	@Before
 	public void setUp() throws Exception {
 
-		jDriver = new JDriver();
-		jDriver.start();
-		jAssert = new JAssert(jDriver);
+		qDriver = new QDriver();
+		qDriver.start();
+		qAssert = new QAssert(qDriver);
 		
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		jDriver.close();
+		qDriver.close();
 	}
 	
 	@org.junit.Test
 	public void signupWithExistingAccount() throws Exception {
-		jDriver.getUrl(homepageUrl);
+		qDriver.getUrl(homepageUrl);
 		
-		jAssert.titleContains("GitHub");
+		qAssert.titleContains("GitHub");
 		
-		JElement signupSectionElement = jDriver.find(".home-hero-signup.text-gray-dark");
+		QElement signupSectionElement = qDriver.find(".home-hero-signup.text-gray-dark");
 
 		signupSectionElement.find("*[id='user[login]']").input("JSTF");
 		signupSectionElement.find("*[id='user[email]']").input("jun1983.sheng@gmail.com");
 		signupSectionElement.find("*[id='user[password]']").input("ASsdfg#@#3");
 		signupSectionElement.find("button").click();
 		
-		jAssert.titleContains("Join GitHub");
+		qAssert.titleContains("Join GitHub");
 	}
 }

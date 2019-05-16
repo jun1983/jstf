@@ -15,43 +15,43 @@ import org.openqa.selenium.WebElement;
 
 import com.deque.axe.AXE;
 import com.deque.axe.AXE.Builder;
-import com.jstf.config.JConfig;
-import com.jstf.selenium.JDriver;
-import com.jstf.selenium.JElement;
+import com.jstf.config.QConfig;
+import com.jstf.selenium.QDriver;
+import com.jstf.selenium.QElement;
 
-public class JAXE {
-	private final URL ruleScriptUrl = JAXE.class.getResource("/axe.min.js");
+public class QAXE {
+	private final URL ruleScriptUrl = QAXE.class.getResource("/axe.min.js");
 	private Builder builder;
 	private WebDriver driver;
 	
 	private List<Rule> rules = new ArrayList<>();  //wcag2a, wcag2aa, wcag412,section508,section508.22.a, all
 	private ReportLevel reportLevel;  //critical, serious, moderate, all
 	
-	public JAXE(WebDriver driver) throws Exception {
-		List<String> axeRules = Arrays.asList(JConfig.AXE_RULES.toLowerCase().split(","));
+	public QAXE(WebDriver driver) throws Exception {
+		List<String> axeRules = Arrays.asList(QConfig.AXE_RULES.toLowerCase().split(","));
 		
 		for (String axeRule : axeRules) {
 			rules.add(Rule.fromString(axeRule));
 		}
-		this.reportLevel = ReportLevel.fromString(JConfig.AXE_REPORT_LEVEL.toLowerCase());
+		this.reportLevel = ReportLevel.fromString(QConfig.AXE_REPORT_LEVEL.toLowerCase());
 		
 		this.driver = driver;
 		init();
 	}
 		
-	public JAXE(JDriver jDriver) throws Exception {
-		this(jDriver.getDriver());
+	public QAXE(QDriver qDriver) throws Exception {
+		this(qDriver.getDriver());
 	}
 	
-	public JAXE(WebDriver driver, List<Rule> rules, ReportLevel reportLevel) throws JSONException {
+	public QAXE(WebDriver driver, List<Rule> rules, ReportLevel reportLevel) throws JSONException {
 		this.driver = driver;
 		this.rules = rules;
 		this.reportLevel = reportLevel;
 		init();
 	}
 	
-	public JAXE(JDriver jd, List<Rule> rules, ReportLevel reportLevel) throws JSONException {
-		this(jd.getDriver(), rules, reportLevel);
+	public QAXE(QDriver qDriver, List<Rule> rules, ReportLevel reportLevel) throws JSONException {
+		this(qDriver.getDriver(), rules, reportLevel);
 	}
 	
 	private void init(){
@@ -73,8 +73,8 @@ public class JAXE {
 		doAssertion(jsonObject);
 	}
 	
-	public void validate(JElement jElement) throws Exception {
-		JSONObject jsonObject = builder.analyze(jElement.getWebElement());
+	public void validate(QElement qElement) throws Exception {
+		JSONObject jsonObject = builder.analyze(qElement.getWebElement());
 		doAssertion(jsonObject);
 	}
 	

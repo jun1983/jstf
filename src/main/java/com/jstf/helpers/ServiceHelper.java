@@ -16,6 +16,7 @@ import org.apache.http.Header;
 import org.apache.http.HttpException;
 import org.apache.http.HttpHost;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.CookieStore;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -28,6 +29,7 @@ import org.apache.http.conn.routing.HttpRoute;
 import org.apache.http.conn.routing.HttpRoutePlanner;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
@@ -41,13 +43,14 @@ import org.openqa.selenium.Cookie;
 import org.openqa.selenium.Cookie.Builder;
 import org.openqa.selenium.WebDriver;
 
-import com.jstf.config.JConfig;
+import com.jstf.config.QConfig;
 
 import lombok.Getter;
 import lombok.Setter;
 
 public class ServiceHelper {
 	private CloseableHttpClient httpClient;
+	private CookieStore cookieStore;
 	
 	@Getter @Setter
 	private int timeout = 20;
@@ -57,15 +60,20 @@ public class ServiceHelper {
 	private boolean redirectsEnabled = true;
 	
 	public ServiceHelper() {
-		final HttpClientBuilder clientBuilder = HttpClients.custom().setRedirectStrategy(new LaxRedirectStrategy()).setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE);
-		
-		if(JConfig.IS_PROXY_ENABLED) {
-			String proxyHost = JConfig.PROXY_ADDR.split(":")[0];
-			int proxyPort = Integer.parseInt(JConfig.PROXY_ADDR.split(":")[1]);
+		cookieStore = new BasicCookieStore();
+	    
+		final HttpClientBuilder clientBuilder = HttpClients.custom()
+												.setRedirectStrategy(new LaxRedirectStrategy())
+												.setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE)
+												.setDefaultCookieStore(cookieStore);
+
+		if(QConfig.IS_PROXY_ENABLED) {
+			String proxyHost = QConfig.PROXY_ADDR.split(":")[0];
+			int proxyPort = Integer.parseInt(QConfig.PROXY_ADDR.split(":")[1]);
 			HttpHost proxy = new HttpHost(proxyHost, proxyPort); 
 			
-			if (StringUtils.isNotEmpty(JConfig.PROXY_BYPASS)) {
-	            final String[] excludeHosts = JConfig.PROXY_BYPASS.split("[,;]");
+			if (StringUtils.isNotEmpty(QConfig.PROXY_BYPASS)) {
+	            final String[] excludeHosts = QConfig.PROXY_BYPASS.split("[,;]");
 	            for(int i=0;i<excludeHosts.length;i++) {
 	            		excludeHosts[i] = excludeHosts[i].trim();
 	            }
@@ -220,6 +228,10 @@ public class ServiceHelper {
 			String cookieStr = setCookie.getValue();
 			driver.manage().addCookie(parseCookie(cookieStr));
 		}
+	}
+	
+	public List<?> getCookies() {
+		return cookieStore.getCookies();
 	}
 	
 	private Cookie parseCookie(String cookieStr) {

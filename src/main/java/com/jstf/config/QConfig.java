@@ -6,7 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.jstf.utils.OSType;
 
-public class JConfig {
+public class QConfig {
 	
 	public static final String BROWSER = getConfig("browser")== null? "chrome" : getConfig("browser");
 	public static final boolean IS_REMOTE_DRIVER = getConfig("is_remote_driver")== null? false : getConfig("is_remote_driver").equals("true");

@@ -11,13 +11,13 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import com.jstf.selenium.JAssert;
-import com.jstf.selenium.JDriver;
+import com.jstf.selenium.QAssert;
+import com.jstf.selenium.QDriver;
 
 public class RemoteBrowserTest {
 	private final static String homePage = "https://www.github.com";
 	private WebDriver driver;
-	private JDriver jDriver;
+	private QDriver qDriver;
 	
 	@org.junit.Test
 	public void signupWithLocalDriver() throws Exception {
@@ -41,24 +41,24 @@ public class RemoteBrowserTest {
 	@org.junit.Test
 	public void signupWithLocalJDriver() throws Exception {
 		driver = createLocalDriver();
-		jDriver = new JDriver();
-		jDriver.setDriver(driver);
+		qDriver = new QDriver();
+		qDriver.setDriver(driver);
 		testGitHubRegistrationWithJDriver();
 	}
 	
 	@org.junit.Test
 	public void signupWithPerfectoJDriver() throws Exception {
 		driver = createPerfectoDriver();
-		jDriver = new JDriver();
-		jDriver.setDriver(driver);
+		qDriver = new QDriver();
+		qDriver.setDriver(driver);
 		testGitHubRegistrationWithJDriver();
 	}
 	
 	@org.junit.Test
 	public void signupWithBrowserStackJDriver() throws Exception {
 		driver = createBrowserStackDriver();
-		jDriver = new JDriver();
-		jDriver.setDriver(driver);
+		qDriver = new QDriver();
+		qDriver.setDriver(driver);
 		testGitHubRegistrationWithJDriver();
 	}
 	
@@ -77,14 +77,14 @@ public class RemoteBrowserTest {
 	}
 	
 	private void testGitHubRegistrationWithJDriver() throws Exception {
-		jDriver.getUrl(homePage, "GitHub");
-		jDriver.find(".home-hero-signup.text-gray-dark").find("*[id='user[login]']").input("Perfecto");
-		jDriver.find(".home-hero-signup.text-gray-dark").find("*[id='user[email]']").input("a@b.c");
-		jDriver.find(".home-hero-signup.text-gray-dark").find("*[id='user[password]']").input("ASsdfg#@#3");
-		jDriver.find(".home-hero-signup.text-gray-dark").find("button").click();
+		qDriver.getUrl(homePage, "GitHub");
+		qDriver.find(".home-hero-signup.text-gray-dark").find("*[id='user[login]']").input("Perfecto");
+		qDriver.find(".home-hero-signup.text-gray-dark").find("*[id='user[email]']").input("a@b.c");
+		qDriver.find(".home-hero-signup.text-gray-dark").find("*[id='user[password]']").input("ASsdfg#@#3");
+		qDriver.find(".home-hero-signup.text-gray-dark").find("button").click();
 		
-		new JAssert(jDriver).titleContains("Join GitHub");
-		jDriver.close();
+		new QAssert(qDriver).titleContains("Join GitHub");
+		qDriver.close();
 	}
 	
 	private WebDriver createLocalDriver() {

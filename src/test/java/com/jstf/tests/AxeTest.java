@@ -3,38 +3,38 @@ package com.jstf.tests;
 import org.junit.After;
 import org.junit.Before;
 
-import com.jstf.accessibility.JAXE;
-import com.jstf.selenium.JAssert;
-import com.jstf.selenium.JDriver;
-import com.jstf.selenium.JElement;
+import com.jstf.accessibility.QAXE;
+import com.jstf.selenium.QAssert;
+import com.jstf.selenium.QDriver;
+import com.jstf.selenium.QElement;
 
 public class AxeTest extends BaseTest{
 	@Before
 	public void setUp() throws Exception {
-		jDriver = new JDriver();
-		jDriver.start();
-		jAssert = new JAssert(jDriver);
+		qDriver = new QDriver();
+		qDriver.start();
+		qAssert = new QAssert(qDriver);
 		
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		jDriver.closeMockProxy();
-		jDriver.close();
+		qDriver.closeMockProxy();
+		qDriver.close();
 	}
 
 	@org.junit.Test
 	public void validatePage() throws Exception {
-		jDriver.getUrl(homepageUrl);
-		jAssert.titleContains("GitHub");
-		new JAXE(jDriver).validate();
+		qDriver.getUrl(homepageUrl);
+		qAssert.titleContains("GitHub");
+		new QAXE(qDriver).validate();
 	}
 	
 	@org.junit.Test
 	public void validateNavElement() throws Exception {
-		jDriver.getUrl(homepageUrl);
-		jAssert.titleContains("GitHub");
-		JElement navElement = jDriver.find(".HeaderMenu");
-		new JAXE(jDriver).validate(navElement);
+		qDriver.getUrl(homepageUrl);
+		qAssert.titleContains("GitHub");
+		QElement navElement = qDriver.find(".HeaderMenu");
+		new QAXE(qDriver).validate(navElement);
 	}
 }
