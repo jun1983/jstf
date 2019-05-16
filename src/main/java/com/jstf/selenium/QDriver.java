@@ -49,6 +49,10 @@ public class QDriver {
 		this(BrowserType.fromString(QConfig.BROWSER), QConfig.IS_REMOTE_DRIVER);
 	}
 	
+	public QDriver(WebDriver driver) {
+		this.driver = driver;
+	}
+	
 	/**
 	 * Define a local driver
 	 * @param browserType
