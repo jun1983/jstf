@@ -14,8 +14,8 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.jstf.accessibility.QAXE;
-import com.jstf.accessibility.QAXE.ReportLevel;
-import com.jstf.accessibility.QAXE.Rule;
+import com.jstf.accessibility.QAXE.AxeReportLevel;
+import com.jstf.accessibility.QAXE.AxeTag;
 import com.jstf.config.QConfig;
 
 import lombok.Cleanup;
@@ -469,8 +469,8 @@ public class QElement {
 		new QAXE(qDriver).validate(this);
 	}
 	
-	public void validateAccessibility(List<Rule> rules, ReportLevel reportLevel) throws Exception {
-		new QAXE(qDriver, rules, reportLevel).validate(this);
+	public void validateAccessibility(AxeReportLevel reportLevel, AxeTag...tags) throws Exception {
+		new QAXE(qDriver, reportLevel, tags).validate(this);
 	}
 	
 	private void assertDisplayed() throws Exception {

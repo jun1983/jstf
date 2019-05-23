@@ -39,7 +39,7 @@ public class QConfig {
 
 	//Accessibility config (AXE)
 	public static String AXE_REPORT_LEVEL = getConfig("axe_report_level")==null? "serious" : getConfig("axe_report_level");
-	public static String AXE_RULES = getConfig("axe_rules")==null? "all" : getConfig("axe_rules");
+	public static String AXE_TAGS = getConfig("axe_tags")==null? "all" : getConfig("axe_tags");
 	
 	public static OSType OS;
 	static {

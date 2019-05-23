@@ -10,7 +10,7 @@ import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.FindsByCssSelector;
 
-public abstract class JBy extends By{
+public abstract class QBy extends By{
 	/**
 	   * @param linkText The exact text to match against
 	   * @return a By which locates A elements by the exact text it displays

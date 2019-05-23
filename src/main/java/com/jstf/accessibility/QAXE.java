@@ -24,16 +24,16 @@ public class QAXE {
 	private Builder builder;
 	private WebDriver driver;
 	
-	private List<Rule> rules = new ArrayList<>();  //wcag2a, wcag2aa, wcag412,section508,section508.22.a, all
-	private ReportLevel reportLevel;  //critical, serious, moderate, all
+	private List<AxeTag> tags = new ArrayList<>();  //wcag2a, wcag2aa, wcag412,section508,section508.22.a, all
+	private AxeReportLevel reportLevel;  //critical, serious, moderate, all
 	
 	public QAXE(WebDriver driver) throws Exception {
-		List<String> axeRules = Arrays.asList(QConfig.AXE_RULES.toLowerCase().split(","));
+		List<String> axeTags = Arrays.asList(QConfig.AXE_TAGS.toLowerCase().split(","));
 		
-		for (String axeRule : axeRules) {
-			rules.add(Rule.fromString(axeRule));
+		for (String axeTag : axeTags) {
+			tags.add(AxeTag.fromString(axeTag));
 		}
-		this.reportLevel = ReportLevel.fromString(QConfig.AXE_REPORT_LEVEL.toLowerCase());
+		this.reportLevel = AxeReportLevel.fromString(QConfig.AXE_REPORT_LEVEL.toLowerCase());
 		
 		this.driver = driver;
 		init();
@@ -43,22 +43,28 @@ public class QAXE {
 		this(qDriver.getDriver());
 	}
 	
-	public QAXE(WebDriver driver, List<Rule> rules, ReportLevel reportLevel) throws JSONException {
+	public QAXE(WebDriver driver, AxeReportLevel reportLevel, AxeTag...tags) throws JSONException {
 		this.driver = driver;
-		this.rules = rules;
+		this.tags = Arrays.asList(tags);
 		this.reportLevel = reportLevel;
 		init();
 	}
 	
-	public QAXE(QDriver qDriver, List<Rule> rules, ReportLevel reportLevel) throws JSONException {
-		this(qDriver.getDriver(), rules, reportLevel);
+	public QAXE(QDriver qDriver, AxeReportLevel reportLevel, AxeTag...tags) throws JSONException {
+		this(qDriver.getDriver(), reportLevel, tags);
 	}
 	
 	private void init(){
 		this.builder = new Builder(driver, ruleScriptUrl);
-		if(rules != null && !rules.contains(Rule.ALL)) {
+		if(tags != null && !tags.contains(AxeTag.ALL)) {
+			
+			List<String> axeRules = new ArrayList<>();
+			for(int i=0;i<tags.size();i++) {
+				axeRules.add(tags.get(i).toString());
+			}
+			
 			JSONObject optionJson = new JSONObject();
-			optionJson.put("runOnly", new JSONObject().put("type", "tag").put("values", rules));
+			optionJson.put("runOnly", new JSONObject().put("type", "tag").put("values", axeRules));
 			builder.options(optionJson.toString());
 		}
 	}
@@ -86,7 +92,7 @@ public class QAXE {
 		//Filter violations with severity
 		JSONArray filteredViolations = new JSONArray();
 		
-		if(reportLevel==ReportLevel.ALL) {
+		if(reportLevel==AxeReportLevel.ALL) {
 			filteredViolations = violations;
 		}else {
 			JSONObject violation;
@@ -94,7 +100,7 @@ public class QAXE {
 			for (int i=0; i<violations.length(); i++) {
 				violation = violations.getJSONObject(i);
 				impact = violation.getString("impact");
-				ReportLevel violationLevel = ReportLevel.fromString(impact);
+				AxeReportLevel violationLevel = AxeReportLevel.fromString(impact);
 				if(violationLevel.compareTo(this.reportLevel)<=0) {
 					filteredViolations.put(violation);
 				}
@@ -108,42 +114,52 @@ public class QAXE {
 		}
 	}
 
-	public enum ReportLevel{
+	public enum AxeReportLevel{
 		CRITICAL, SERIOUS, MODERATE, ALL;
 		
-		public static ReportLevel fromString(String text) throws Exception{
+		public static AxeReportLevel fromString(String text) throws Exception{
 	        switch (text.toLowerCase()) {
 			case "critical":
-				return ReportLevel.CRITICAL;
+				return AxeReportLevel.CRITICAL;
 			case "serious":
-				return ReportLevel.SERIOUS;
+				return AxeReportLevel.SERIOUS;
 			case "moderate":
-				return ReportLevel.MODERATE;
+				return AxeReportLevel.MODERATE;
 			case "all":
-				return ReportLevel.ALL;
+				return AxeReportLevel.ALL;
 			default:
 				throw new Exception(text + " is not supported.");
 			}
 		}
 	}
 	
-	public enum Rule{
-		WCAG2A, WCAG2AA, WCAG412, SECTION508, SECTION50822a, ALL;
+	public enum AxeTag{
+		WCAG2A("wcag2a"), WCAG2AA("wcag2aa"), WCAG412("wcag412"), SECTION508("section508"), SECTION50822a("section50822a"), ALL("all");
 		
-		public static Rule fromString(String text) throws Exception{
+		private final String text;
+		
+		private AxeTag(final String text) {
+			this.text = text;
+		}
+		
+		public String toString() {
+			return this.text;
+		}
+		
+		public static AxeTag fromString(String text) throws Exception{
 	        switch (text.toLowerCase()) {
 			case "wcag2a":
-				return Rule.WCAG2A;
+				return AxeTag.WCAG2A;
 			case "wcag2aa":
-				return Rule.WCAG2AA;
+				return AxeTag.WCAG2AA;
 			case "wcag412":
-				return Rule.WCAG412;
+				return AxeTag.WCAG412;
 			case "section508":
-				return Rule.SECTION508;
+				return AxeTag.SECTION508;
 			case "section50822a":
-				return Rule.SECTION50822a;
+				return AxeTag.SECTION50822a;
 			case "all":
-				return Rule.ALL;
+				return AxeTag.ALL;
 			default:
 				throw new Exception(text + " is not supported.");
 			}

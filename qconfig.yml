@@ -33,7 +33,7 @@ default_window_size: "" #1024*768, default is max window
 
 #Accessibility(AXE) settings
 axe_report_level: critical #critical, serious, moderate, all
-axe_rules: all  #wcag2a, wcag2aa, wcag412,section508,section508.22.a, all
+axe_tags: all  #wcag2a, wcag2aa, wcag412,section508,section508.22.a, all
 
 
 #Remote Driver Capability Settings
