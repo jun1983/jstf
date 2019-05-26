@@ -59,6 +59,9 @@ public class ServiceHelper {
 	@Getter @Setter
 	private boolean redirectsEnabled = true;
 	
+	@Getter @Setter
+	private boolean closeAfterExecution = true;
+	
 	public ServiceHelper() {
 		cookieStore = new BasicCookieStore();
 	    
@@ -186,7 +189,9 @@ public class ServiceHelper {
 	    		return "";
 	    }finally {
 	    		response.close();
-	    		this.closeHttpClient();
+	    		if(closeAfterExecution) {
+	    			this.closeHttpClient();
+	    		}
 		}
 	}
 	

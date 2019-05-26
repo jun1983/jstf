@@ -162,7 +162,7 @@ public class QElement {
 		return results;
 	}
 	
-	public QElement parent() throws Exception{
+	public QElement getParentElement() throws Exception{
 		return find(By.xpath("./.."));
 	}
 
