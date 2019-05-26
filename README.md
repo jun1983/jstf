@@ -30,12 +30,12 @@ To use JSTF in your java + selenium tests or application, add the `JSTF` depende
 
 JSTF provides a series of enhanced selenium functions and libraries that enable users to run functional, non-functional testing with very little effort.
 
- - JDriver: A wrapped selenium web driver, more advanced and robust.
- - JElement: Much different from WebElement, JElement stores element locators instead of a real WebElement instance. It finds web elements when interactting it and automatically retry. `You will never see StaleElementReferenceException again` 
- - JAXE: Automated Accesibility Testing library. Integrated with [AXE core](https://github.com/dequelabs/axe-core).
+ - QDriver: A wrapped selenium web driver, more advanced and robust.
+ - QElement: Much different from WebElement, QElement stores element locators instead of a real WebElement instance. It finds web elements when interactting it and automatically retry. `You will never see StaleElementReferenceException again` 
+ - QAXE: Automated Accesibility Testing library. Integrated with [AXE core](https://github.com/dequelabs/axe-core).
  - BrokenLinkHelper: Scan broken links in a page or inside an web element.
  - ServiceHelper: Send http request with Apache Http Client, auto adapting proxy setting in JSTF configuration. 
- - JMockProxy: Running a mock proxy behind web browser, programmatically control http traffic. It allows you to manipulate HTTP requests and responses, capture HTTP content, and export performance data as a [HAR file]. Inegrated with [BrowserMob Proxy](https://github.com/lightbody/browsermob-proxy) .
+ - QMockProxy: Running a mock proxy behind web browser, programmatically control http traffic. It allows you to manipulate HTTP requests and responses, capture HTTP content, and export performance data as a [HAR file]. Inegrated with [BrowserMob Proxy](https://github.com/lightbody/browsermob-proxy) .
  - ZAP: ZAP security tool is also running behind the web browser. It scans all traffic during selenium tests and generate security test report after test. Inegrated with [OWASP Zed Attack Proxy](https://www.owasp.org/index.php/OWASP_Zed_Attack_Proxy_Project)
 
 ### Framework Configuration
@@ -80,7 +80,7 @@ axe_rules: all  #wcag2a, wcag2aa, wcag412,section508,section508.22.a, all
 
 HTTP request manipulation is supported in JMockProxy. it is very easy to use and reliable. For most use cases, inspecting and modifying requests/responses, `addRequestFilter` and `addResponseFilter` will be sufficient. You can programmatically setup the injection rule before the request happens.
 ```java
-    jDriver.getMockProxy().addRequestFilter(new RequestFilter() {
+    qDriver.getMockProxy().addRequestFilter(new RequestFilter() {
         @Override
         public HttpResponse filterRequest(HttpRequest request, HttpMessageContents contents, HttpMessageInfo messageInfo) {
             if(messageInfo.getOriginalUrl().equals(homepageUrl)){
@@ -90,7 +90,7 @@ HTTP request manipulation is supported in JMockProxy. it is very easy to use and
 		}
 	});
     
-    jDriver.getMockProxy().addResponseFilter(new ResponseFilter() {
+    qDriver.getMockProxy().addResponseFilter(new ResponseFilter() {
 		@Override
 		public void filterResponse(HttpResponse response, HttpMessageContents contents, HttpMessageInfo messageInfo) {
 			if(messageInfo.getOriginalUrl().equals(homepageUrl)) {
@@ -100,4 +100,4 @@ HTTP request manipulation is supported in JMockProxy. it is very easy to use and
 	});
 ```
 
-For more practical use of JMockProxy, please refer to [JMockProxyTestCases](src/test/java/com/jstf/tests/MockProxyTest.java)
+For more practical use of JMockProxy, please refer to [QMockProxyTestCases](src/test/java/com/jstf/tests/MockProxyTest.java)
