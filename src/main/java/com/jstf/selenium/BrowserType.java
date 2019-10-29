@@ -1,6 +1,6 @@
 package com.jstf.selenium;
 
-import com.jstf.utils.QLogger;
+import com.jstf.utils.JLogger;
 
 public enum BrowserType {
 	CHROME, FIREFOX, IE, SAFARI;
@@ -16,7 +16,7 @@ public enum BrowserType {
 		case "safari":
 			return BrowserType.SAFARI;
 		default:
-			QLogger.getLogger().error(browserName + " is not supported.");
+			JLogger.getLogger().error(browserName + " is not supported.");
 			System.exit(-10021);
 			return null;
 		}

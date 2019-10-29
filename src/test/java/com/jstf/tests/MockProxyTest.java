@@ -6,9 +6,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.openqa.selenium.By;
 
-import com.jstf.selenium.QAssert;
-import com.jstf.selenium.QDriver;
-import com.jstf.utils.QLogger;
+import com.jstf.selenium.JAssert;
+import com.jstf.selenium.JDriver;
+import com.jstf.utils.JLogger;
 
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
@@ -21,41 +21,41 @@ import net.lightbody.bmp.util.HttpMessageInfo;
 public class MockProxyTest extends BaseTest {
 	@Before
 	public void setUp() throws Exception {
-		qDriver = new QDriver();
-		qDriver.start();
-		qAssert = new QAssert(qDriver);
+		jDriver = new JDriver();
+		jDriver.start();
+		jAssert = new JAssert(jDriver);
 		
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		qDriver.closeMockProxy();
-		qDriver.close();
+		jDriver.closeMockProxy();
+		jDriver.close();
 	}
 	
 	@org.junit.Test
 	public void redirectUrlTest() throws Exception {
-		qDriver.getUrl(homepageUrl, "GitHub");
+		jDriver.getUrl(homepageUrl, "GitHub");
 		
-		qDriver.getQMockProxy().redirectUrl("https://shop.github.com/", "https://www.google.com/");
-		qDriver.find(".footer").find(By.linkText("Shop")).click();
+		jDriver.getJMockProxy().redirectUrl("https://shop.github.com/", "https://www.google.com/");
+		jDriver.find(".footer").find(By.linkText("Shop")).click();
 
-		qAssert.titleContains("Google", 30);
+		jAssert.titleContains("Google", 30);
 	}
 	
 	@org.junit.Test
 	public void captureRequestTest() throws Exception {
-		qDriver.getUrl(homepageUrl, "GitHub");
+		jDriver.getUrl(homepageUrl, "GitHub");
 		
-		qDriver.getQMockProxy().startHarCapture("Shop Request", CaptureType.REQUEST_CONTENT, CaptureType.REQUEST_COOKIES);
-		qDriver.find(".footer").find(By.linkText("Shop")).click();
+		jDriver.getJMockProxy().startHarCapture("Shop Request", CaptureType.REQUEST_CONTENT, CaptureType.REQUEST_COOKIES);
+		jDriver.find(".footer").find(By.linkText("Shop")).click();
 		Thread.sleep(5000);
-		JSONArray requestsCaptured = qDriver.getQMockProxy().getAllRequestsFromHar();
+		JSONArray requestsCaptured = jDriver.getJMockProxy().getAllRequestsFromHar();
 		for (int i=0;i<requestsCaptured.length(); i++) {
 			JSONObject requestJson = requestsCaptured.getJSONObject(i);
 			String expectedRequest = "https://shop.github.com/";
 			if(requestJson.getString("url").equals(expectedRequest) && requestJson.getString("method").equalsIgnoreCase("GET")) {
-				QLogger.getLogger().info("Received request to " + expectedRequest);
+				JLogger.getLogger().info("Received request to " + expectedRequest);
 				return;
 			}
 		}
@@ -64,7 +64,7 @@ public class MockProxyTest extends BaseTest {
 	
 	@org.junit.Test
 	public void addHttpRequestHeaderTest() throws Exception {
-		qDriver.getQMockProxy().addRequestFilter(new RequestFilter() {
+		jDriver.getJMockProxy().addRequestFilter(new RequestFilter() {
 			@Override
 			public HttpResponse filterRequest(HttpRequest request, HttpMessageContents contents, HttpMessageInfo messageInfo) {
 				if(messageInfo.getOriginalUrl().equals(homepageUrl)){
@@ -74,12 +74,12 @@ public class MockProxyTest extends BaseTest {
 			}
 		});
 		
-		qDriver.getUrl(homepageUrl, "GitHub");
+		jDriver.getUrl(homepageUrl, "GitHub");
 	}
 	
 	@org.junit.Test
 	public void addHttpResponseHeaderTest() throws Exception {
-		qDriver.getQMockProxy().addResponseFilter(new ResponseFilter() {
+		jDriver.getJMockProxy().addResponseFilter(new ResponseFilter() {
 			@Override
 			public void filterResponse(HttpResponse response, HttpMessageContents contents, HttpMessageInfo messageInfo) {
 				if(messageInfo.getOriginalUrl().equals(homepageUrl)) {
@@ -88,6 +88,6 @@ public class MockProxyTest extends BaseTest {
 			}
 		});
 		
-		qDriver.getUrl(homepageUrl, "GitHub");
+		jDriver.getUrl(homepageUrl, "GitHub");
 	}
 }

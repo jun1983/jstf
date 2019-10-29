@@ -43,7 +43,7 @@ import org.openqa.selenium.Cookie;
 import org.openqa.selenium.Cookie.Builder;
 import org.openqa.selenium.WebDriver;
 
-import com.jstf.config.QConfig;
+import com.jstf.config.JConfig;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -70,13 +70,13 @@ public class ServiceHelper {
 												.setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE)
 												.setDefaultCookieStore(cookieStore);
 
-		if(QConfig.IS_PROXY_ENABLED) {
-			String proxyHost = QConfig.PROXY_ADDR.split(":")[0];
-			int proxyPort = Integer.parseInt(QConfig.PROXY_ADDR.split(":")[1]);
+		if(JConfig.IS_PROXY_ENABLED) {
+			String proxyHost = JConfig.PROXY_ADDR.split(":")[0];
+			int proxyPort = Integer.parseInt(JConfig.PROXY_ADDR.split(":")[1]);
 			HttpHost proxy = new HttpHost(proxyHost, proxyPort); 
 			
-			if (StringUtils.isNotEmpty(QConfig.PROXY_BYPASS)) {
-	            final String[] excludeHosts = QConfig.PROXY_BYPASS.split("[,;]");
+			if (StringUtils.isNotEmpty(JConfig.PROXY_BYPASS)) {
+	            final String[] excludeHosts = JConfig.PROXY_BYPASS.split("[,;]");
 	            for(int i=0;i<excludeHosts.length;i++) {
 	            		excludeHosts[i] = excludeHosts[i].trim();
 	            }

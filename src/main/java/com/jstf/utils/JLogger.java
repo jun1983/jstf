@@ -4,7 +4,7 @@ import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.Logger;
 
-public class QLogger {
+public class JLogger {
 	private static Logger logger;
 	
 	public static synchronized Logger getLogger(){
@@ -13,7 +13,7 @@ public class QLogger {
 		}
 		
 		Logger logger = (Logger) LoggerFactory.getLogger("JSTF");
-	    QLogger.logger = logger;
+	    JLogger.logger = logger;
 	    return logger;
 	}
 }

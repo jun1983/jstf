@@ -4,14 +4,14 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import com.jstf.config.QConfig;
+import com.jstf.config.JConfig;
 
-public class QAssert {
-	private QDriver qDriver;
+public class JAssert {
+	private JDriver jDriver;
 	private WebDriver driver;
-	public QAssert(QDriver qDriver) {
-		this.qDriver = qDriver;
-		this.driver = qDriver.getDriver();
+	public JAssert(JDriver jDriver) {
+		this.jDriver = jDriver;
+		this.driver = jDriver.getDriver();
 	}
 	
 	public void urlEquals(String url, int timeOutInSeconds) throws Exception {
@@ -19,11 +19,11 @@ public class QAssert {
 	}
 	
 	public void urlEquals(String url) throws Exception {
-		urlEquals(url, QConfig.ELEMENT_TIMEOUT);
+		urlEquals(url, JConfig.ELEMENT_TIMEOUT);
 	}
 	
 	public void urlContains(String url) throws Exception {
-		urlContains(url, QConfig.ELEMENT_TIMEOUT);
+		urlContains(url, JConfig.ELEMENT_TIMEOUT);
 	}
 	
 	public void urlContains(String url, int timeOutInSeconds) throws Exception {
@@ -35,7 +35,7 @@ public class QAssert {
 	}
 	
 	public void urlMatch(String regex) throws Exception {
-		urlMatch(regex, QConfig.ELEMENT_TIMEOUT);
+		urlMatch(regex, JConfig.ELEMENT_TIMEOUT);
 	}
 	
 	public void titleEquals(String title, int timeOutInSeconds) throws Exception {
@@ -43,19 +43,19 @@ public class QAssert {
 	}
 	
 	public void titleEquals(String title) throws Exception {
-		titleEquals(title, QConfig.ELEMENT_TIMEOUT);
+		titleEquals(title, JConfig.ELEMENT_TIMEOUT);
 	}
 	
 	public void titleContainsIgnoreCase(String title, int timeOutInSeconds) throws Exception {
-		new WebDriverWait(driver, timeOutInSeconds).until(QExpectedConditions.titleContainsIgnoreCase(title));
+		new WebDriverWait(driver, timeOutInSeconds).until(JExpectedConditions.titleContainsIgnoreCase(title));
 	}
 	
 	public void titleContainsIgnoreCase(String title) throws Exception {
-		new WebDriverWait(driver, QConfig.ELEMENT_TIMEOUT).until(QExpectedConditions.titleContainsIgnoreCase(title));
+		new WebDriverWait(driver, JConfig.ELEMENT_TIMEOUT).until(JExpectedConditions.titleContainsIgnoreCase(title));
 	}
 	
 	public void titleContains(String title) throws Exception {
-		titleContains(title, QConfig.ELEMENT_TIMEOUT);
+		titleContains(title, JConfig.ELEMENT_TIMEOUT);
 	}
 	
 	public void titleContains(String title, int timeOutInSeconds) throws Exception {

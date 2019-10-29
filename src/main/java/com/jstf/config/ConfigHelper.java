@@ -10,12 +10,12 @@ import java.util.Map;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.yaml.snakeyaml.Yaml;
 
-import com.jstf.utils.QLogger;
+import com.jstf.utils.JLogger;
 
 import ch.qos.logback.classic.Logger;
 
 public class ConfigHelper {
-	private static Logger logger = QLogger.getLogger();
+	private static Logger logger = JLogger.getLogger();
 	private static Map<String, String> jstfConfig = new HashMap<>();
 	private static final String JSTF_CONFIG_FILE = "jstf_config_file";
 	private static String configFile;
@@ -23,7 +23,7 @@ public class ConfigHelper {
 	static {		
 		configFile = System.getenv(JSTF_CONFIG_FILE);
 		if(configFile==null || configFile.isEmpty()) {
-			configFile = "qconfig.yml";
+			configFile = "jconfig.yml";
 		}
 		
 		try {
@@ -71,7 +71,7 @@ public class ConfigHelper {
 	}
 	
 	public static DesiredCapabilities getRemoteCapability() {
-		String remoteCapability = QConfig.REMOTE_DRIVER_CAPABILITY;
+		String remoteCapability = JConfig.REMOTE_DRIVER_CAPABILITY;
 		return getRemoteCapability(remoteCapability);
 	}
 	

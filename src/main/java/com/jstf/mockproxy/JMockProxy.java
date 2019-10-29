@@ -9,8 +9,8 @@ import java.util.Map;
 
 import org.json.JSONArray;
 
-import com.jstf.config.QConfig;
-import com.jstf.utils.QLogger;
+import com.jstf.config.JConfig;
+import com.jstf.utils.JLogger;
 
 import ch.qos.logback.classic.Logger;
 import io.netty.buffer.ByteBuf;
@@ -31,54 +31,54 @@ import net.lightbody.bmp.proxy.CaptureType;
 import net.lightbody.bmp.util.HttpMessageContents;
 import net.lightbody.bmp.util.HttpMessageInfo;
 
-public class QMockProxy {
+public class JMockProxy {
 	private boolean chainedOnly = false;
 	private String upstreamProxy = null;
 	private boolean isAvailable = false;
 	
-	private Logger logger = QLogger.getLogger();
+	private Logger logger = JLogger.getLogger();
 	
 	private BrowserMobProxy internalProxy;
 	private BrowserMobProxy externalProxy;
 	
-	private static List<QMockProxy> qMockProxies = new ArrayList<>();
+	private static List<JMockProxy> jMockProxies = new ArrayList<>();
 	
-	public static QMockProxy retrieve() throws Exception {
-		for(QMockProxy qMockProxy : qMockProxies){
-			if(qMockProxy.isAvailable()){
-				qMockProxy.setAvailable(false);
-				return qMockProxy;
+	public static JMockProxy retrieve() throws Exception {
+		for(JMockProxy jMockProxy : jMockProxies){
+			if(jMockProxy.isAvailable()){
+				jMockProxy.setAvailable(false);
+				return jMockProxy;
 			}
 		}
 		
-		QMockProxy qMockProxy = new QMockProxy();
-		return qMockProxy.start();
+		JMockProxy jMockProxy = new JMockProxy();
+		return jMockProxy.start();
 	}
 	
 	private boolean isCapturingHar = false;
 	
-	public QMockProxy() throws Exception {
-		if(!QConfig.IS_MOCK_PROXY_ENABLED) {
-			throw new Exception("QMockProxy is not enabled in configuration. Please check 'is_mock_proxy_enabled' setting.");
+	public JMockProxy() throws Exception {
+		if(!JConfig.IS_MOCK_PROXY_ENABLED) {
+			throw new Exception("JMockProxy is not enabled in configuration. Please check 'is_mock_proxy_enabled' setting.");
 		}
 		
-		if(QConfig.IS_PROXY_ENABLED) {
-			this.upstreamProxy = QConfig.PROXY_ADDR;
-			this.chainedOnly = QConfig.PROXY_BYPASS == null || QConfig.PROXY_BYPASS.isEmpty();
+		if(JConfig.IS_PROXY_ENABLED) {
+			this.upstreamProxy = JConfig.PROXY_ADDR;
+			this.chainedOnly = JConfig.PROXY_BYPASS == null || JConfig.PROXY_BYPASS.isEmpty();
 		}
 	}
 	
-	public QMockProxy(String upstreamProxy) {
+	public JMockProxy(String upstreamProxy) {
 		this.chainedOnly = true;
 		this.upstreamProxy = upstreamProxy;
 	}
 	
-	public QMockProxy(String upstreamProxy, Boolean chainedOnly) {
+	public JMockProxy(String upstreamProxy, Boolean chainedOnly) {
 		this.chainedOnly = chainedOnly;
 		this.upstreamProxy = upstreamProxy;
 	}
 	
-	public QMockProxy start() throws Exception{
+	public JMockProxy start() throws Exception{
 		if(!chainedOnly) {
 			internalProxy = intiateBrowserMobProxy();
 			logger.info("Direct Mock Proxy: " + getDirectMockAddress() + " connecting to internet directly");
@@ -89,7 +89,7 @@ public class QMockProxy {
 			logger.info("Chained Mock Proxy: " + getChainedMockAddress() + " chain upstream to " + getUpstreamProxy());
 		}
 		
-		if(QConfig.IS_CORS_ENABLED) {
+		if(JConfig.IS_CORS_ENABLED) {
 			enableCORS();
 		}
 		return this;
@@ -165,7 +165,7 @@ public class QMockProxy {
 		if(externalProxy!=null) {
 			externalProxy.stop();
 		}
-		qMockProxies.remove(this);
+		jMockProxies.remove(this);
 	}
 	
 	/**

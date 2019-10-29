@@ -11,11 +11,11 @@ import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.remote.CapabilityType;
 
-import com.jstf.config.QConfig;
-import com.jstf.utils.QLogger;
+import com.jstf.config.JConfig;
+import com.jstf.utils.JLogger;
 import com.jstf.utils.OSType;
 
-public class QDriverOptions {
+public class JDriverOptions {
 	static MutableCapabilities getDefaultDriverOptions(BrowserType browserType) throws Exception {
 		switch (browserType) {
 		case CHROME:
@@ -23,7 +23,7 @@ public class QDriverOptions {
 		case FIREFOX:
 			return getDefaultFirefoxOptions();
 		default:
-			throw new Exception(QConfig.BROWSER + " is not supported.");
+			throw new Exception(JConfig.BROWSER + " is not supported.");
 		}
 	}
 	
@@ -51,7 +51,7 @@ public class QDriverOptions {
 		 chromeOptions.setCapability(CapabilityType.PAGE_LOAD_STRATEGY, "none");
 		 
 		 //Headless mode
-		 if(QConfig.IS_HEADLESS_BROWSER) {
+		 if(JConfig.IS_HEADLESS_BROWSER) {
 			 chromeOptions.addArguments("--headless");
 		 }
 		 return chromeOptions;
@@ -59,7 +59,7 @@ public class QDriverOptions {
 	
 	static FirefoxOptions getDefaultFirefoxOptions() {
 		FirefoxOptions firefoxOptions = new FirefoxOptions();
-		if(QConfig.IS_HEADLESS_BROWSER) {
+		if(JConfig.IS_HEADLESS_BROWSER) {
 			firefoxOptions.addArguments("--headless");
 		}
 		FirefoxProfile profile = new FirefoxProfile();
@@ -78,13 +78,13 @@ public class QDriverOptions {
 	static void initDriverBinarySetting(BrowserType browserType) throws Exception {
 		switch (browserType) {
 		case CHROME:
-			validateDriverBinarySetting("webdriver.chrome.driver", "drivers/chromedriver" + (QConfig.OS.equals(OSType.WINDOWS)? ".exe" : ""));
+			validateDriverBinarySetting("webdriver.chrome.driver", "drivers/chromedriver" + (JConfig.OS.equals(OSType.WINDOWS)? ".exe" : ""));
 			break;
 		case FIREFOX:
-			validateDriverBinarySetting("webdriver.gecko.driver", "drivers/geckodriver" + (QConfig.OS.equals(OSType.WINDOWS)? ".exe" : ""));
+			validateDriverBinarySetting("webdriver.gecko.driver", "drivers/geckodriver" + (JConfig.OS.equals(OSType.WINDOWS)? ".exe" : ""));
 			break;
 		default:
-			throw new Exception(QConfig.BROWSER + " is not supported.");
+			throw new Exception(JConfig.BROWSER + " is not supported.");
 		}
 	}
 	
@@ -93,13 +93,13 @@ public class QDriverOptions {
 		if(driverPath==null || driverPath.isEmpty()) {
 			driverPath = defaultPath;
 			System.setProperty(envVar, defaultPath);
-			QLogger.getLogger().warn("Webdriver warning: " + envVar + " is not defined. Using default path:" + defaultPath);
+			JLogger.getLogger().warn("Webdriver warning: " + envVar + " is not defined. Using default path:" + defaultPath);
 		}
 		
 		File driverFile=new File(driverPath);
 		
 		if(!driverFile.exists()) {
-    			QLogger.getLogger().error("Critical Error: Selenium web driver binary file is not found at " + driverFile.getAbsolutePath());
+    			JLogger.getLogger().error("Critical Error: Selenium web driver binary file is not found at " + driverFile.getAbsolutePath());
 	    		System.exit(-10010);
 	    }
 	}
